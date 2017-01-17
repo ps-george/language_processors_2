@@ -17,7 +17,8 @@ int main()
 {
     histogram_type histogram;
     double sum=0;
-
+    std::cout.setf(std::ios::fixed,std::ios::floatfield);
+    std::cout.precision(3);
     while(1){
         TokenType type=(TokenType)yylex();
 
@@ -37,18 +38,20 @@ int main()
             // deallocated by us.
 
             // add yylval.wordValue to histogram
-            std::string s(*yylval.wordValue);
-
-            if ( histogram.count(s)) {
+            std::string s = (std::string)(*yylval.wordValue);
+            //std::cerr << "Converted yylval pointer to string: " << s << std::endl;
+            int hc = histogram.count(s);
+            if (hc) {
               // found
-              histogram[s] += 1;
+              histogram[s] = hc + 1;
             } else {
               histogram.insert({s,1});
               // not found
             }
-            histogram.insert({s,1});
+            //std::cerr << "Inserted word into histogram" << std::endl;
             // Free the pointer yylval.wordValue to stop leaks
             delete yylval.wordValue;
+            //std::cout << "Freed pointer to yylval.stirngValue to stop leaks\n";
         }else{
             assert(0); // There are only three token types.
             return 1;
@@ -60,7 +63,9 @@ int main()
     std::cout << sum << std::endl;
 
     // This sorts the histogram TODO: Find out how
-    std::vector<std::pair<std::string,double> > sorted(histogram.begin(), histogram.end());
+    std::vector<std::pair<std::string,double>> sorted(histogram.begin(), histogram.end());
+    //std::cerr << "Put histogram into vector called sorted." << std::endl;
+
     std::sort(sorted.begin(), sorted.end(), [](const std::pair<std::string,double> &a, const std::pair<std::string,double> &b){
         if(a.second > b.second)
             return true;
@@ -74,7 +79,7 @@ int main()
         std::string name=it->first;
         unsigned count=it->second;
         // Print out `name` and `count` to std::cout
-        std::cout << name << " " << count << std::endl;
+        std::cout << "\"" << name << "\" " << count << std::endl;
 
         ++it;
     }

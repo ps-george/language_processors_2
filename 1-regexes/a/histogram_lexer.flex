@@ -15,11 +15,11 @@
 
 %%
 
-[0-9]+          { fprintf(stderr, "Number\n"); /* get value out of yytext and into yylval.numberValue */ yylval.number = atod(yytext); return Number; }
+[+-]?([0-9]*[.])?[0-9]+        { /*fprintf(stderr, "Number\n"); get value out of yytext and into yylval.numberValue */ yylval.numberValue = std::stod((yytext)); return Number; }
 
-[a-z]+          { fprintf(stderr, "Word\n"); /* get value out of yytext and into yylval.wordValue */ yylval.wordValue = yytext;  return Word; }
+\"?[a-zA-Z]+\"?          { /*fprintf(stderr, "Word\n"); get value out of yytext and into yylval.wordValue */ yylval.wordValue = new std::string(yytext); return Word; }
 
-\n              { fprintf(stderr, "Newline\n", *yytext); }
+\n              { /*fprintf(stderr, "Newline\n");*/ return 0; }
 
 
 %%
