@@ -15,18 +15,22 @@
 
 %%
 
-[+-]?([0-9]*[.])?[0-9]+        { /*fprintf(stderr, "Number\n"); get value out of yytext and into yylval.numberValue */ yylval.numberValue = std::stod((yytext)); return Number; }
+\"(\\.|[^"])*\" { yylval.wordValue = new std::string(yytext); return Quoted; }
 
-\"?[a-zA-Z]+\"?          { /*fprintf(stderr, "Word\n"); get value out of yytext and into yylval.wordValue */ yylval.wordValue = new std::string(yytext); return Word; }
+[+-]?([0-9]+[.]?)[0-9]* { fprintf(stderr, "Number"); yylval.numberValue = std::stod(yytext); return Number; }
 
-\n              { /*fprintf(stderr, "Newline\n");*/ return 0; }
+[a-z]+ { yylval.wordValue = new std::string(yytext); return Word; }
 
+[ \t\n]
+
+[^\x00-\x7F]
+
+.
 
 %%
 
 /* Error handler. This will get called if none of the rules match. */
 void yyerror (char const *s)
 {
-  fprintf (stderr, "Flex Error: %s\n", s); /* s is the text that wasn't matched */
   exit(1);
 }
