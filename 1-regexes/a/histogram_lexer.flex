@@ -19,7 +19,7 @@
 
 [+-]?([0-9]+[.]?)[0-9]* { fprintf(stderr, "Number"); yylval.numberValue = std::stod(yytext); return Number; }
 
-[a-z]+ { yylval.wordValue = new std::string(yytext); return Word; }
+[a-zA-Z]+ { yylval.wordValue = new std::string(yytext); return Word; }
 
 [ \t\n]
 
