@@ -14,12 +14,6 @@ typedef std::unordered_map<std::string, unsigned> histogram_type;
 // Define the instance of the variable that is declared in the header
 TokenValue yylval;
 
-double abs(double x) {
-  if (x < 0)
-    x = -x;
-  return x;
-}
-
 int main() {
   histogram_type histogram;
   double sum = 0.000;
@@ -37,7 +31,7 @@ int main() {
     case (Number):
       // We have a number. The value will be
       // in yylval.numberValue
-      sum = sum + abs(yylval.numberValue);
+      sum = sum + yylval.numberValue;
       break;
     case (Word):
     case (Quoted):
