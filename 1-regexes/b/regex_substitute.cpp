@@ -27,8 +27,7 @@ int main(int argc, char *argv[])
       std::cerr << "Too many arguments." << std::endl;
       return 1;
     }
-
-    // TODO: for each input line
+    
     std::string tmp;
     while( std::getline(std::cin, tmp) ){
       //   Apply the regex and print out the new string
