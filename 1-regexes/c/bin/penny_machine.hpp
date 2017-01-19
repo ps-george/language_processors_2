@@ -45,6 +45,7 @@ public:
 };
 
 // Machine contains all the nodes and pennys
+// a(a|b) - Create a state, create a state, go back one, create b state
 class Machine {
 public:
   //! Start up the machine (place penny on the starting node)
