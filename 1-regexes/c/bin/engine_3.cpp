@@ -72,9 +72,9 @@ string convert_to_postfix(string re) {
 			default:
 				// If the token is a character, then push it to the output queue.
 				// If there is more than one of these, put a .
-				if (count>0){
+				if (count>1){
 					count--;
-					opStack.push('.');
+					outQueue.push_back('.');
 				}
 				outQueue.push_back(c);
 				count++;
@@ -95,7 +95,7 @@ string convert_to_postfix(string re) {
 			case '|':
 			case '+':
 				if (opStack.empty()){
-					opStack.push(c);
+					outQueue.push_back(c);
 				}
 				else if (!lower_precedence(c,opStack.top())){
 					opStack.push(c);  // If the token is an operator, if it has higher or equal precedence than the operator at the top of the opStack, push it onto the opStack
@@ -109,12 +109,23 @@ string convert_to_postfix(string re) {
 				}
 				break;
 		}
+		cout << "outQueue:";
+		stack<char> clone = opStack;
+		for (int j = 0; j<outQueue.size();j++){
+			cout << outQueue[j];
+		}
+		
   }
 	while (!opStack.empty()){
 		outQueue.push_back(opStack.top());
 		opStack.pop();
 	}
+	while (count > 1) {
+		outQueue.push_back('.');
+		count--;
+	}
 	std::string postfix(outQueue.begin(),outQueue.end());
+	cout << endl;
 	cout << postfix << endl;
   return postfix;
 }
