@@ -28,7 +28,6 @@ void Penny::move(Arrow & a){
 void Machine::start() {
   // Create a penny at the start node
   pennys.push_back(Penny(head));
-  
 }
 
 int Machine::input_char(char c) {
