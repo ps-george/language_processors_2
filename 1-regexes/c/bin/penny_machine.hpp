@@ -16,49 +16,81 @@ final nodes
 
 #include <list>
 #include <vector>
+#include <string>
 
 using namespace std;
 
 typedef class Node *nodePtr;
 
 struct Arrow {
-  bool match(const char &c1) const;
+  bool traversable(const char &c1) const;
   char c;
-  nodePtr d;
+  nodePtr target;
+  bool epsilon() const{
+    if (c == ' ') return true;
+    else return false;
+  }
 };
 
 class Node {
 public:
-  bool is_blank() const;
-  std::vector<Arrow> arrows;
-  unsigned int i;
+  Arrow a1;
+  Arrow a2;
+  int num;
   bool end;
+  bool is_match() const{
+    if (!num) return true;
+    else return false;
+  };
 };
+
+
+struct Frag {
+  nodePtr start; // Points to the start state
+  vector<Arrow*> alist; // list of all unconnected arrows
+  //Frag join(Frag &f2);
+  //void route(Node *n);
+};
+
+// Create list of one arrow
+vector<Arrow*> list1(Arrow* a){
+  vector<Arrow*> v;
+  v.push_back(a);
+  return v;
+}
+
+void route(vector<Arrow*> &alist, nodePtr t1){
+  for (int i = 0;i<alist.size();i++){
+    (*alist[i]).target = t1;
+  }
+}
+
+vector<Arrow*> join(vector<Arrow*>& alist1, vector<Arrow*>& alist2){
+  for (int i = 0;i<alist2.size();i++){
+    alist1.push_back(alist2[i]);
+  }
+  return alist1;
+}
 
 class Penny {
 public:
   Penny(nodePtr &ptr);
-  int match(Node n, char c);
-  void update(nodePtr &ptr);
-  void move(Arrow & a);
   nodePtr current;
 };
-
 // Machine contains all the nodes and pennys
 // a(a|b) - Create a state, create a state, go back one, create b state
 class Machine {
 public:
+  Machine(std::string psfx);
   //! Start up the machine (place penny on the starting node)
   void start();
   //! Input a character to the machine.
   int input_char(char c);
-  //! Create a node inside the machine
-  void create_node();
-  void move_penny();
+  void reset();
 
 private:
   // Points to the start of the machine
-  nodePtr head;
+  nodePtr slot;
   std::list<Penny> pennys;
 };
 
