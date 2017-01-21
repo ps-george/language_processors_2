@@ -243,7 +243,7 @@ int main(){
   getline(cin,re);
   // Convert it to postfix
   postfix = re2postfix(re);
-  cout << postfix << endl;
+  cerr << postfix << endl;
   // Construct the machine
   
   Machine m(postfix);
@@ -265,9 +265,9 @@ int main(){
     // last character must be a match
     if (matches>0) cout << "Match" << endl;
     else cout << "NoMatch" << endl;
-    // cout << "Total matches: " << total << endl;
-    // cout << "Total loops: " << m.get_loopcount() << endl;
+    cerr << "Total matches: " << total << endl;
+    cerr << "Total loops: " << m.get_loopcount() << endl;
   }
   
-  cout << "Total loops: " << m.get_loopcount() << endl;
+  cerr << "Total loops: " << m.get_loopcount() << endl;
 }
