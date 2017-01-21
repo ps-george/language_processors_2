@@ -193,7 +193,19 @@ int Machine::input_char(char c) {
       pennys.insert(it, Penny((tmp->a1).target));
       traversed++;
     }
-    else {
+    if (tmp->num==2){
+      if (tmp->a2.traversable(c)){
+        // If the previous arrow wasn't traversed, erase this penny
+        if (!traversed){
+          it = pennys.erase(it);
+        }
+        // Clone penny at target, it points to penny after
+        pennys.insert(it, Penny((tmp->a2).target));
+        traversed++;
+      }
+    }
+    // if nothing matched, delete the penny
+    if (!traversed) {
       it = pennys.erase(it);
     }
     cout << "Pennys moved = " << traversed << endl;
