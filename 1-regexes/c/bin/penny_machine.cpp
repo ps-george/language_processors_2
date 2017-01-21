@@ -110,18 +110,18 @@ void Machine::move_epsilon(){
     // Get its current node
     erased = 0;
     nodePtr tmp = (*it1).current;
-    cout << "Epsilon check: ";
+    // cout << "Epsilon check: ";
     if (tmp->num==0){
-      cout << "0 arrows" << endl;
+      // cout << "0 arrows" << endl;
       ++it1;
       continue;
     }
     if (tmp->num==1) {
-      cout << "1 arrow wants: " << tmp->a1.c << "." <<  endl;
+      // cout << "1 arrow wants: " << tmp->a1.c << "." <<  endl;
     }
     else if (tmp->num==2) {
-      cout << "First arrow wants: " << tmp->a1.c;
-      cout << ". Second arrow wants: " << tmp->a2.c << "." << endl;
+      // cout << "First arrow wants: " << tmp->a1.c;
+      // cout << ". Second arrow wants: " << tmp->a2.c << "." << endl;
     }
     if (tmp->num>0) {
       // If the arrows are epsilon arrows and don't point to themselves, move penny
@@ -151,7 +151,7 @@ void Machine::move_epsilon(){
 void Machine::start() {
   // destroy all pennys
   pennys.clear();
-  loopcount = 0;
+  pennys.push_back(Penny(slot));
   // Create a penny at the start node
   // pennys.push_back(Penny(slot));
   // Move all pennys until none of the pennys are on epsilons. (keep going until moved = 0)
@@ -162,13 +162,17 @@ int Machine::input_char(char c) {
   // For each penny in the machine, move all the pennys
   int matches = 0;
   int traversed = 0;
-  int size = pennys.size();
+  
+  // int size = pennys.size();
   // Place a penny at the start
-  cout << "There are " << size << " pennys in the machine.";
-  pennys.push_back(Penny(slot));
-  cout << " Putting one in and navigating epsilons..." << endl;
+  // cout << "There are " << size << " pennys in the machine.";
+  
+  // don't want to put penny in each time because need to match entire string
+  //pennys.push_back(Penny(slot));
+  
+  // cout << " Putting one in and navigating epsilons..." << endl;
   move_epsilon();
-  cout << "There are " << pennys.size() << " pennys after navigating epsilons." << endl;
+  // cout << "There are " << pennys.size() << " pennys after navigating epsilons." << endl;
   
   for (auto it = pennys.begin(); it != pennys.end();) {
     loopcount++;
@@ -181,7 +185,7 @@ int Machine::input_char(char c) {
         it = pennys.erase(it);
         continue;
     }
-    
+    /*
     if (tmp->num==1) {
       cout << "Arrow wants: " << tmp->a1.c << endl;
     }
@@ -189,7 +193,7 @@ int Machine::input_char(char c) {
       cout << "First arrow wants: " << tmp->a1.c << endl;
       cout << "Second arrow wants: " << tmp->a2.c << endl;
     }
-    
+    */
     // if there are no arrows on the node, erase the penny
     traversed = 0;
     // for each arrow coming out of the node, check if it is traversable
@@ -216,7 +220,7 @@ int Machine::input_char(char c) {
     if (!traversed) {
       it = pennys.erase(it);
     }
-    cout << "Pennys moved = " << traversed << endl;
+    // cout << "Pennys moved = " << traversed << endl;
   }
   move_epsilon();
   return check_matches();
@@ -246,19 +250,24 @@ int main(){
   // Each time there's a new line
   int matches = 0;
   while (getline(cin, in)) {
+    // If there is no input, stop and print out statistics
+    if (!in[0]) break;
+    
     total = 0;
     m.start();
     for (int i = 0; i<in.length(); i++){
       matches = 0;
-      cout << i+1 << "th character: " << in[i] << endl;
+      // cout << i+1 << "th character: " << in[i] << endl;
       matches = m.input_char(in[i]);
       total += matches;
-      cout << "Matches: " << matches << " Total Matches thus far: " << total << endl;
+      // cout << "Matches: " << matches << " Total Matches thus far: " << total << endl;
     }
-    if (total>0) cout << "Match" << endl;
+    // last character must be a match
+    if (matches>0) cout << "Match" << endl;
     else cout << "NoMatch" << endl;
-    cout << "Total loops: " << m.get_loopcount() << endl;
-    
+    // cout << "Total matches: " << total << endl;
+    // cout << "Total loops: " << m.get_loopcount() << endl;
   }
   
+  cout << "Total loops: " << m.get_loopcount() << endl;
 }
