@@ -9,7 +9,6 @@ int main(int argc, char *argv[])
     std::regex rgx;
     std::string sbs;
 
-    std::cerr << argc - 1 << " arguments provided." <<std::endl;
     if (argc==1){
       std::cerr << "No regex or subsitution string provided." << std::endl;
       return 1;
@@ -17,8 +16,9 @@ int main(int argc, char *argv[])
     if (argc>1 && argc!=3){
       rgx = argv[1];
       std::cerr << "No subtitution string provided." << std::endl;
-      // return 1;
+      return 1;
     }
+    
     if (argc==3){
       rgx = argv[1];
       sbs = argv[2];
