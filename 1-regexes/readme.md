@@ -76,7 +76,7 @@ git remote -v
 You can now integrate changes from the spec remote by pulling
 from it:
 ````
-git remote pull spec master
+git pull spec master
 ````
 If you have changed a file that also changed in the master,
 then you may need to commit locally first. Look carefully
@@ -347,7 +347,7 @@ However, it can be convinced to behave like sed if you read or search the docume
 It might help to develop a set of test regular expressions, and for each
 one create a few lines that match and a few that don't. You might wish
 to adapt the test infrastructure from part `a` to help you, or create
-some other simple way of checking that your
+some other simple way of checking that your program works.
 
 Advanced: Regex implementation (20%)
 ====================================
@@ -364,7 +364,13 @@ following features:
 - The program takes as an input argument an ASCII regular expression,
   which can contain the following constructs:
 
-  - Character literals (but not character ranges)
+  - Character literals (but not character ranges).
+  
+    - Character literals only include the alphabetic letters, numbers, and underscore,
+      so each literal must match `[a-zA-Z0-9_]`.
+    
+    - The dot construct will not appear, as it is syntactic sugar for a character
+      range containing all characters.
 
   - One-or-more (but not zero-or-more)
 
@@ -419,6 +425,8 @@ handle mis-matches? What happens if there are two alternatives to try?
 
 Once you have got the data-structure working, then think about parsing
 the regular expression into the data-structure.
+
+You are free to use flex/bison if you want to for parsing the regular expression.
 
 Submission
 ==========
