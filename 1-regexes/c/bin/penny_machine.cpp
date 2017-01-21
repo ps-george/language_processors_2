@@ -92,6 +92,16 @@ Machine::Machine(string psfx) {
   slot = f1.start;
 }
 
+int Machine::check_matches(){
+  int matches = 0;
+  for (auto i = pennys.begin();i != pennys.end(); ++i){
+    if ((*i).current->is_match()){
+      matches++;
+    }
+  }
+  return matches;
+}
+
 void Machine::move_epsilon(){
   // For each penny in the list
   loopcount++;
@@ -100,10 +110,23 @@ void Machine::move_epsilon(){
     // Get its current node
     erased = 0;
     nodePtr tmp = (*it1).current;
+    cout << "Epsilon check: ";
+    if (tmp->num==0){
+      cout << "0 arrows" << endl;
+      ++it1;
+      continue;
+    }
+    if (tmp->num==1) {
+      cout << "1 arrow wants: " << tmp->a1.c << "." <<  endl;
+    }
+    else if (tmp->num==2) {
+      cout << "First arrow wants: " << tmp->a1.c;
+      cout << ". Second arrow wants: " << tmp->a2.c << "." << endl;
+    }
     if (tmp->num>0) {
       // If the arrows are epsilon arrows and don't point to themselves, move penny
       if (tmp->a1.epsilon()){
-        if (!( (tmp->a1).target == (*it1).current )){
+        if ((tmp->a1).target != tmp){
           pennys.push_back(Penny((tmp->a1).target));
           // Delete the penny?
           it1 = pennys.erase(it1);
@@ -111,7 +134,7 @@ void Machine::move_epsilon(){
         }
       }
       if (tmp->num==2){
-        if (!( (tmp->a2).target == (*it1).current )){
+        if ((tmp->a2).target != tmp){
           pennys.push_back(Penny((tmp->a2).target));
           // Delete the penny?
           if (!erased) {
@@ -122,8 +145,9 @@ void Machine::move_epsilon(){
     }
     ++it1;
   }
-  // Only go once, but add cloned pennys to the end of the list
+  // Only go once, but add cloned pennys to the end of the list;
 }
+
 void Machine::start() {
   // destroy all pennys
   pennys.clear();
@@ -153,14 +177,13 @@ int Machine::input_char(char c) {
     
     // If the node has 0 arrows, delete the penny and go to next penny
     if (((*tmp).num) == 0){
+        matches++;
         it = pennys.erase(it);
         continue;
     }
     
-    cout << "Penny at node: ";
-    cout << "Node has " << tmp->num << " arrows.";
     if (tmp->num==1) {
-      cout << " Arrow wants: " << tmp->a1.c << endl;
+      cout << "Arrow wants: " << tmp->a1.c << endl;
     }
     else if (tmp->num==2) {
       cout << "First arrow wants: " << tmp->a1.c << endl;
@@ -171,10 +194,6 @@ int Machine::input_char(char c) {
     traversed = 0;
     // for each arrow coming out of the node, check if it is traversable
     if (tmp->a1.traversable(c)){
-      // If node is match, note it down
-      if ((*(tmp->a1).target).is_match()){
-        matches++;
-      }
       // Erase penny
       it = pennys.erase(it);
       // Clone penny at target
@@ -183,9 +202,6 @@ int Machine::input_char(char c) {
     }
     if (tmp->num==2){
       if (tmp->a2.traversable(c)){
-        if ((*(tmp->a2).target).is_match()){
-          matches++;
-        }
         // If the previous arrow wasn't traversed, erase this penny
         if (!traversed)
           it = pennys.erase(it);
@@ -200,10 +216,8 @@ int Machine::input_char(char c) {
     }
     cout << "Pennys moved = " << traversed << endl;
   }
-  if (traversed){
-    move_epsilon();
-  }
-  return matches;
+  move_epsilon();
+  return check_matches();
 }
 
 void Machine::reset(){

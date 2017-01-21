@@ -89,6 +89,7 @@ public:
   void reset();
   void move_epsilon();
   int get_loopcount() const {return loopcount;};
+  int check_matches();
 private:
   // Points to the start of the machine
   nodePtr slot;
