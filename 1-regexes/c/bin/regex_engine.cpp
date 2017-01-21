@@ -6,13 +6,28 @@
 
 using namespace std;
 
-int main(){
+int main(int argc, char* argv[]){
   string re;
   string postfix;
   string in;
   int total = 0;
   // Get the regular expression
-  getline(cin,re);
+  //getline(cin,re);
+  //
+  // Get the regular expression from command lines
+  if (argc==1){
+    std::cerr << "No regex or subsitution string provided." << std::endl;
+    return 1;
+  }
+  
+  else if (argc==2){
+    re = argv[1];
+  }
+  else {
+    std::cerr << "Too many arguments provided." << std::endl;
+  }
+  
+  
   // Convert it to postfix
   postfix = re2postfix(re);
   cerr << postfix << endl;
@@ -27,7 +42,7 @@ int main(){
     
     total = 0;
     m.start();
-    for (int i = 0; i<in.length(); i++){
+    for (unsigned int i = 0; i<in.length(); i++){
       matches = 0;
       // cout << i+1 << "th character: " << in[i] << endl;
       matches = m.input_char(in[i]);

@@ -15,7 +15,7 @@ std::string re2postfix(std::string re) {
   int num_char = 0;
   int num_alt = 0;
   // For each character in the std::string
-  for (int i = 0; i < re.length(); i++) {
+  for (unsigned int i = 0; i < re.length(); i++) {
     char c = re[i];
     switch (c) {
     // If the token is a character, then push it to the output queue.

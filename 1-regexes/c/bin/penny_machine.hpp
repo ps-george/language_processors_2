@@ -38,7 +38,6 @@ public:
   Arrow a1;
   Arrow a2;
   int num;
-  bool end;
   bool is_match() const{
     if (!num) return true;
     else return false;
@@ -61,13 +60,13 @@ vector<Arrow*> list1(Arrow* a){
 }
 
 void route(vector<Arrow*> &alist, nodePtr t1){
-  for (int i = 0;i<alist.size();i++){
+  for (unsigned int i = 0;i<alist.size();i++){
     (*alist[i]).target = t1;
   }
 }
 
 vector<Arrow*> join(vector<Arrow*>& alist1, vector<Arrow*>& alist2){
-  for (int i = 0;i<alist2.size();i++){
+  for (unsigned int i = 0;i<alist2.size();i++){
     alist1.push_back(alist2[i]);
   }
   return alist1;
@@ -110,7 +109,7 @@ IMPLEMENTATIONS
  Penny::Penny(nodePtr &ptr) : current(ptr) {}
 
  bool Arrow::traversable(const char &c1) const{
-   if (c==c1 | c==' ') return true;
+   if ((c==c1) | (c==' ')) return true;
    return false;
  }
 
@@ -119,7 +118,7 @@ IMPLEMENTATIONS
    stack<Frag> fragStack;
    Frag f1, f2, tmpf;
    Node* tmp;
-   for (int i = 0; i < psfx.length(); i++) {
+   for (unsigned int i = 0; i < psfx.length(); i++) {
      char c = psfx[i];
      switch (c) {
      // Default, token is a character. Create a Char node and push onto the stack
@@ -174,7 +173,6 @@ IMPLEMENTATIONS
    // Connect all unconnected arrows to a matching state
    // Why do we only have 1 final state?
    Node *match = new Node({});
-   match->end = true;
    route(f1.alist, match);
    slot = f1.start;
  }
