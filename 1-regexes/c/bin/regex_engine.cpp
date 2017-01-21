@@ -27,7 +27,6 @@ int main(int argc, char* argv[]){
     std::cerr << "Too many arguments provided." << std::endl;
   }
   
-  
   // Convert it to postfix
   postfix = re2postfix(re);
   cerr << postfix << endl;
@@ -55,6 +54,4 @@ int main(int argc, char* argv[]){
     cerr << "Total matches: " << total << endl;
     cerr << "Total loops: " << m.get_loopcount() << endl;
   }
-  
-  cerr << "Total loops: " << m.get_loopcount() << endl;
 }

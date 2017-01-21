@@ -5,8 +5,41 @@
 #include <vector>
 #include <stack>
 
+std::string replace_alternation(std::string in){
+  std::vector<char> out;
+  // If there is a [
+  // Replace it with a (
+  // Keep going until you find a ]
+  bool open = false;
+  char c;
+  for (unsigned int i = 0; i<in.length(); i++){
+    // If you come across a square backet, replace it with a curvy bracket
+    c = in[i];
+    // If you find closing square bracket and there has been no open square bracket, error.
+    if (c == ']') {
+      if (!open){
+        return "Error: Mismatched square brackets.";
+      }
+      out.pop_back();
+      out.push_back(')');
+      open = false;
+    }
+    // If you find a open square bracket, set open to true, replace with curvy bracket
+    else if (c == '[') {
+      open = true;
+      out.push_back('(');
+    }
+    else {
+      out.push_back(c);
+      if(open)
+        out.push_back('|');
+    }
+  }
+  return std::string(out.begin(), out.end());
+}
 // Convert infix to postfix function
 std::string re2postfix(std::string re) {
+  re = replace_alternation(re);
   // Create the std::stacks
   std::stack<char> opStack;
   std::vector<char> outQueue;
