@@ -87,11 +87,13 @@ public:
   //! Input a character to the machine.
   int input_char(char c);
   void reset();
-
+  void move_epsilon();
+  int get_loopcount() const {return loopcount;};
 private:
   // Points to the start of the machine
   nodePtr slot;
   std::list<Penny> pennys;
+  int loopcount;
 };
 
 #endif

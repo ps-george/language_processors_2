@@ -28,6 +28,7 @@ bool Arrow::traversable(const char &c1) const{
 }
 
 Machine::Machine(string psfx) {
+  loopcount = 0;
   stack<Frag> fragStack;
   Frag f1, f2, tmpf;
   Node* tmp;
@@ -71,7 +72,7 @@ Machine::Machine(string psfx) {
     // pop the top two items from the stack
     // create a new node pointing to each of the popped off fragments
     // push a new fragment with all the outwards arrows of the two previoius
-    // fragments combined
+    // fragments combine 
     case '|':
       f2 = fragStack.top();
       fragStack.pop();
@@ -91,19 +92,70 @@ Machine::Machine(string psfx) {
   slot = f1.start;
 }
 
+void Machine::move_epsilon(){
+  // For each penny in the list
+  loopcount++;
+  int erased = 0;
+  for (auto it1 = pennys.begin(); it1 != pennys.end();) {
+    // Get its current node
+    erased = 0;
+    nodePtr tmp = (*it1).current;
+    if (tmp->num>0) {
+      // If the arrows are epsilon arrows and don't point to themselves, move penny
+      if (tmp->a1.epsilon()){
+        if (!( (tmp->a1).target == (*it1).current )){
+          pennys.push_back(Penny((tmp->a1).target));
+          // Delete the penny?
+          it1 = pennys.erase(it1);
+          erased++;
+        }
+      }
+      if (tmp->num==2){
+        if (!( (tmp->a2).target == (*it1).current )){
+          pennys.push_back(Penny((tmp->a2).target));
+          // Delete the penny?
+          if (!erased) {
+            it1 = pennys.erase(it1);
+          }
+        }
+      }
+    }
+    ++it1;
+  }
+  // Only go once, but add cloned pennys to the end of the list
+}
 void Machine::start() {
   // destroy all pennys
   pennys.clear();
+  loopcount = 0;
   // Create a penny at the start node
-  pennys.push_back(Penny(slot));
+  // pennys.push_back(Penny(slot));
+  // Move all pennys until none of the pennys are on epsilons. (keep going until moved = 0)
+  // this->move_epsilon();
 }
 
 int Machine::input_char(char c) {
   // For each penny in the machine, move all the pennys
   int matches = 0;
+  int traversed = 0;
+  int size = pennys.size();
+  // Place a penny at the start
+  cout << "There are " << size << " pennys in the machine.";
+  pennys.push_back(Penny(slot));
+  cout << " Putting one in and navigating epsilons..." << endl;
+  move_epsilon();
+  cout << "There are " << pennys.size() << " pennys after navigating epsilons." << endl;
+  
   for (auto it = pennys.begin(); it != pennys.end();) {
+    loopcount++;
     // For each penny, get the current node of the penny
     nodePtr tmp = (*it).current;
+    
+    // If the node has 0 arrows, delete the penny and go to next penny
+    if (((*tmp).num) == 0){
+        it = pennys.erase(it);
+        continue;
+    }
     
     cout << "Penny at node: ";
     cout << "Node has " << tmp->num << " arrows.";
@@ -116,22 +168,17 @@ int Machine::input_char(char c) {
     }
     
     // if there are no arrows on the node, erase the penny
-    if (((*tmp).num) == 0)
-        it = pennys.erase(it);
-        
-    int traversed = 0;
+    traversed = 0;
     // for each arrow coming out of the node, check if it is traversable
     if (tmp->a1.traversable(c)){
       // If node is match, note it down
       if ((*(tmp->a1).target).is_match()){
         matches++;
       }
-  
       // Erase penny
       it = pennys.erase(it);
       // Clone penny at target
       pennys.insert(it, Penny((tmp->a1).target));
-      
       traversed++;
     }
     if (tmp->num==2){
@@ -153,49 +200,8 @@ int Machine::input_char(char c) {
     }
     cout << "Pennys moved = " << traversed << endl;
   }
-  // for each of the pennys, check out current node. If arrow has epsilons, move pennys  
-  for (auto it1 = pennys.begin(); it1 != pennys.end();) {
-    int t = 0;
-    nodePtr tmp = (*it1).current;
-    cout << "Node has " << tmp->num << " arrows.";
-    if (tmp->num==1) {
-      cout << " Arrow wants: " << tmp->a1.c << endl;
-    }
-    else if (tmp->num==2) {
-      cout << "First arrow wants: " << tmp->a1.c << endl;
-      cout << "Second arrow wants: " << tmp->a2.c << endl;
-    }
-    
-    if (tmp->num==1) {
-      if (tmp->a1.epsilon()){
-        cout << "Erase penny" << endl;
-        it1 = pennys.erase(it1);
-        pennys.insert(it1, Penny((tmp->a1).target));
-        
-        t++;
-      }
-      //cout << " Arrow wants: " << tmp->a1.c << endl;
-    }
-    else if (tmp->num==2) {
-      cout << "Erase penny 2" << endl;
-      if (tmp->a1.epsilon()){
-        
-        it1 = pennys.erase(it1);
-        pennys.insert(it1, Penny((tmp->a1).target));
-        t++;
-      }
-      if (tmp->a2.epsilon()){
-        if (!t) {
-          
-          it1 = pennys.erase(it1);
-          t++;
-        }
-        pennys.insert(it1,Penny((tmp->a2).target));
-      }
-    }
-    if (!t){
-      ++it1;
-    }
+  if (traversed){
+    move_epsilon();
   }
   return matches;
 }
@@ -235,6 +241,7 @@ int main(){
     }
     if (total>0) cout << "Match" << endl;
     else cout << "NoMatch" << endl;
+    cout << "Total loops: " << m.get_loopcount() << endl;
     
   }
   
