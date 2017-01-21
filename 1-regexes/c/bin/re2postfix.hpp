@@ -33,7 +33,6 @@ std::string re2postfix(std::string re) {
     // If the token is a left parenthesis (i.e. "("), raise the level of
     // num_alt and num_char and reset them
     case '(':
-
       if (num_char > 1) {
         num_char--;
         outQueue.push_back('.');
@@ -67,8 +66,7 @@ std::string re2postfix(std::string re) {
     // For binary operators, push concats while there are concatentations to be
     // made and increment the number of alts to add at the end
     case '|':
-      while (num_char > 1) {
-        num_char--;
+      while (--num_char > 0) {
         outQueue.push_back('.');
       }
       num_alt++;
@@ -77,15 +75,15 @@ std::string re2postfix(std::string re) {
   }
 
   // exhaust all remaining binary operators from the virtual std::stack
-  while ((num_char) > 1) {
+  // 
+  while (--num_char > 0) {
     outQueue.push_back('.');
-    num_char--;
   }
+  
   while (num_alt > 0) {
     outQueue.push_back('|');
     num_alt--;
   }
-
   // tranform outQueue std::vector into std::string
   std::string postfix(outQueue.begin(), outQueue.end());
   return postfix;
