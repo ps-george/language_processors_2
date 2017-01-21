@@ -68,7 +68,7 @@ int main() {
     if (type == None)
       break;
   }
-  // TODO: print out `sum` to cout with three decimal digits
+  //print out `sum` to cout with three decimal digits
   std::cout << sum << std::endl;
 
   // This sorts the histogram TODO: Find out how
@@ -93,7 +93,6 @@ int main() {
     // remove_chars_from_string(name,"\"");
     unsigned count = it->second;
     // Print out `name` and `count` to cout
-    // TODO: need to remove " if first and last characters are "
     // Maybe craft stringstream then print to cout in one go
     std::cout << "\"" << name << "\" " << count << "\n";
 
