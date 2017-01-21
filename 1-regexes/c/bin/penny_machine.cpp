@@ -182,9 +182,16 @@ int Machine::input_char(char c) {
         continue;
     }
     
-    cout << "Arrow wants: " << tmp->a1.c << endl;
-    traversed = 0;
+    if (tmp->num==1) {
+      cout << "Arrow wants: " << tmp->a1.c << endl;
+    }
+    else if (tmp->num==2) {
+      cout << "First arrow wants: " << tmp->a1.c << endl;
+      cout << "Second arrow wants: " << tmp->a2.c << endl;
+    }
     
+    // if there are no arrows on the node, erase the penny
+    traversed = 0;
     // for each arrow coming out of the node, check if it is traversable
     if (tmp->a1.traversable(c)){
       // Erase penny
@@ -193,6 +200,7 @@ int Machine::input_char(char c) {
       pennys.insert(it, Penny((tmp->a1).target));
       traversed++;
     }
+     
     if (tmp->num==2){
       if (tmp->a2.traversable(c)){
         // If the previous arrow wasn't traversed, erase this penny
@@ -211,8 +219,7 @@ int Machine::input_char(char c) {
     cout << "Pennys moved = " << traversed << endl;
   }
   move_epsilon();
-  // matches may be superfluous
-  return check_matches() + matches;
+  return check_matches();
 }
 
 void Machine::reset(){
