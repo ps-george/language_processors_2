@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     std::regex rgx;
     std::string sbs;
 
-    std::cout << argc - 1 << " arguments provided." <<std::endl;
+    std::cerr << argc - 1 << " arguments provided." <<std::endl;
     if (argc==1){
       std::cerr << "No regex or subsitution string provided." << std::endl;
       return 1;
