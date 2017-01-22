@@ -4,7 +4,7 @@ echo "========================================"
 echo " Cleaning the temporaries and outputs"
 make clean
 echo " Force building penny_machine"
-make penny_machine -B
+make regex_engine -B
 if [[ "$?" -ne 0 ]]; then
     echo "Build failed.";
 fi
@@ -21,7 +21,7 @@ for i in test/in/*.txt; do
     echo ""
     echo "Input file : ${i}"
     BASENAME=$(basename $i .txt);
-    cat $i | dos2unix | ./histogram  > test/out/$BASENAME.stdout.txt  2> test/out/$BASENAME.stderr.txt
+    cat $i | dos2unix | ./regex_engine  > test/out/$BASENAME.stdout.txt  2> test/out/$BASENAME.stderr.txt
 
     diff <(cat test/ref/$BASENAME.stdout.txt | dos2unix) <(cat test/out/$BASENAME.stdout.txt) > test/out/$BASENAME.diff.txt
     if [[ "$?" -ne "0" ]]; then
