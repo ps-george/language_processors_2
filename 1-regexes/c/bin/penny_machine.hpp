@@ -14,11 +14,12 @@ penny is on a node with no arrow labeled c, remove the penny.
 final nodes
  */
 
+#include <algorithm>
+#include <iostream>
 #include <list>
 #include <stack>
 #include <string>
 #include <vector>
-#include <iostream>
 
 using namespace std;
 
@@ -102,7 +103,7 @@ private:
   nodePtr slot;
   std::list<Penny> pennys;
   int loopcount;
-  std::vector<Node*> memTracker;
+  std::vector<Node *> memTracker;
 };
 
 /*
@@ -121,20 +122,18 @@ bool Arrow::traversable(const char &c1) const {
 
 Machine::~Machine() {
   pennys.clear();
-  
-  int j = 0;
+
+  std::vector<nodePtr> deleted;
   for (auto i = memTracker.begin(); i != memTracker.end(); ++i) {
-    std::cerr << j++ << std::endl;
-    // Removal of duplicates, speed doesn't matter but better algorithm would be better
-    for (auto k = i; k != memTracker.end(); ++k){
-      if (*i == *k){
-        // Duplicate
-        memTracker.erase(k);
-      }
+    // If node has already been deleted, don't delete it again
+    if (std::find(deleted.begin(), deleted.end(), *i) != deleted.end()) {
+      continue;
+    } else {
+      delete *i;
+      deleted.push_back(*i);
     }
-    delete *i;
   }
-  
+
   memTracker.clear();
 }
 
@@ -153,7 +152,7 @@ Machine::Machine(string psfx) {
       tmp->a1 = Arrow({c, NULL});
       tmp->num = 1;
       memTracker.push_back(tmp);
-      
+
       // Create a fragment with start = &tmp and added ptr to arrow to the list
       // tmpf
       fragStack.push(Frag({tmp, list1(&(tmp->a1))}));
@@ -178,7 +177,7 @@ Machine::Machine(string psfx) {
       // For now, we will use space as epsilon, and maybe change it later.
       tmp = new Node({Arrow({' ', NULL}), Arrow({' ', f1.start}), 2});
       memTracker.push_back(tmp);
-      
+
       route(f1.alist, tmp);
       fragStack.push(Frag({f1.start, list1(&(tmp->a1))}));
       break;
@@ -202,7 +201,7 @@ Machine::Machine(string psfx) {
   // Connect all unconnected arrows to a matching state
   Node *match = new Node({});
   memTracker.push_back(tmp);
-  
+
   route(f1.alist, match);
   slot = f1.start;
 }
@@ -229,7 +228,7 @@ void Machine::move_epsilon() {
       ++it1;
       continue;
     }
-    
+
     if (tmp->num > 0) {
       // If the arrows are epsilon arrows and don't point to themselves, move
       // penny
@@ -259,7 +258,6 @@ void Machine::move_epsilon() {
 void Machine::start() {
   // destroy all pennys
   pennys.clear();
-  
   // Create a penny at the start node
   pennys.push_back(Penny(slot));
 }
