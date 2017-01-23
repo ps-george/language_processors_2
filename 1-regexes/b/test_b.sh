@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+# Compare output of programs directly
 echo "========================================"
 echo " Cleaning the temporaries and outputs"
 make clean
@@ -13,42 +15,28 @@ mkdir -p test/out
 
 echo "========================================="
 
+chmod u+x regex_substitute
 PASSED=0
 CHECKED=0
 
 for i in test/in/*.txt; do
-    echo "==========================="
-    echo ""
-    echo "Input file : ${i}"
-    BASENAME=$(basename $i .txt);
-    cat $i | dos2unix | ./regex_substitute  > test/out/$BASENAME.stdout.txt  2> test/out/$BASENAME.stderr.txt
-
-    diff <(cat test/ref/$BASENAME.stdout.txt | dos2unix) <(cat test/out/$BASENAME.stdout.txt) > test/out/$BASENAME.diff.txt
-    if [[ "$?" -ne "0" ]]; then
-        echo -e "\nERROR"
-    else
-        PASSED=$(( ${PASSED}+1 ));
-    fi
+  echo "Input file : ${i}"
+  exec 6< $i
+  read -r sedpattern <&6
+     
+  BASENAME=$(basename $i .txt);
+  tail --lines=+2 $i | eval ./regex_substitute_ref.sh ${sedpattern}
+  diff <(tail --lines=+2 $i | eval ./regex_substitute_ref.sh ${sedpattern}) <(tail --lines=+2 $i | eval ./regex_substitute ${sedpattern})
+  if [ $? -ne 0 ]; then
+    echo -e "\nERROR"
+  else
+    PASSED=$(( ${PASSED}+1 ));
+  fi
     CHECKED=$(( ${CHECKED}+1 ));
+  exec 6<&-
 done
 
 
 echo "########################################"
 echo "Passed ${PASSED} out of ${CHECKED}".
 echo ""
-
-RELEASE=$(lsb_release -d)
-if [[ $? -ne 0 ]]; then
-    echo ""
-    echo "Warning: This appears not to be a Linux environment"
-    echo "         Make sure you do a final run on a lab machine or an Ubuntu VM"
-else
-    grep -q "Ubuntu 16.04" <(echo $RELEASE)
-    FOUND=$?
-
-    if [[ $FOUND -ne 0 ]]; then
-        echo ""
-        echo "Warning: This appears not to be the target environment"
-        echo "         Make sure you do a final run on a lab machine or an Ubuntu VM"
-    fi
-fi
