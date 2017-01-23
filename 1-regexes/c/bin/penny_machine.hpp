@@ -18,6 +18,7 @@ final nodes
 #include <stack>
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -37,22 +38,23 @@ struct Arrow {
 
 class Node {
 public:
+  //~Node();
   Arrow a1;
   Arrow a2;
   int num;
-  bool is_match() const {
-    if (!num)
-      return true;
-    else
-      return false;
-  };
+  bool is_match() const;
+};
+
+bool Node::is_match() const {
+  if (!num)
+    return true;
+  else
+    return false;
 };
 
 struct Frag {
   nodePtr start;         // Points to the start state
   vector<Arrow *> alist; // list of all unconnected arrows
-  // Frag join(Frag &f2);
-  // void route(Node *n);
 };
 
 // Create list of one arrow
@@ -100,6 +102,7 @@ private:
   nodePtr slot;
   std::list<Penny> pennys;
   int loopcount;
+  std::vector<Node*> memTracker;
 };
 
 /*
@@ -116,7 +119,24 @@ bool Arrow::traversable(const char &c1) const {
   return false;
 }
 
-Machine::~Machine() {}
+Machine::~Machine() {
+  pennys.clear();
+  
+  int j = 0;
+  for (auto i = memTracker.begin(); i != memTracker.end(); ++i) {
+    std::cerr << j++ << std::endl;
+    // Removal of duplicates, speed doesn't matter but better algorithm would be better
+    for (auto k = i; k != memTracker.end(); ++k){
+      if (*i == *k){
+        // Duplicate
+        memTracker.erase(k);
+      }
+    }
+    delete *i;
+  }
+  
+  memTracker.clear();
+}
 
 Machine::Machine(string psfx) {
   loopcount = 0;
@@ -132,6 +152,8 @@ Machine::Machine(string psfx) {
       tmp = new Node;
       tmp->a1 = Arrow({c, NULL});
       tmp->num = 1;
+      memTracker.push_back(tmp);
+      
       // Create a fragment with start = &tmp and added ptr to arrow to the list
       // tmpf
       fragStack.push(Frag({tmp, list1(&(tmp->a1))}));
@@ -153,9 +175,10 @@ Machine::Machine(string psfx) {
     case '+':
       f1 = fragStack.top();
       fragStack.pop();
-      // For now, we will use space as epsilon, and deal with it later.
-      // Very difficult to set the char of the second arrow!
+      // For now, we will use space as epsilon, and maybe change it later.
       tmp = new Node({Arrow({' ', NULL}), Arrow({' ', f1.start}), 2});
+      memTracker.push_back(tmp);
+      
       route(f1.alist, tmp);
       fragStack.push(Frag({f1.start, list1(&(tmp->a1))}));
       break;
@@ -170,14 +193,16 @@ Machine::Machine(string psfx) {
       f1 = fragStack.top();
       fragStack.pop();
       tmp = new Node({Arrow({' ', f1.start}), Arrow({' ', f2.start}), 2});
+      memTracker.push_back(tmp);
       fragStack.push(Frag({tmp, join(f1.alist, f2.alist)}));
     }
   }
   f1 = fragStack.top();
   fragStack.pop();
   // Connect all unconnected arrows to a matching state
-  // Why do we only have 1 final state?
   Node *match = new Node({});
+  memTracker.push_back(tmp);
+  
   route(f1.alist, match);
   slot = f1.start;
 }
@@ -200,18 +225,11 @@ void Machine::move_epsilon() {
     // Get its current node
     erased = 0;
     nodePtr tmp = (*it1).current;
-    // cout << "Epsilon check: ";
     if (tmp->num == 0) {
-      // cout << "0 arrows" << endl;
       ++it1;
       continue;
     }
-    if (tmp->num == 1) {
-      // cout << "1 arrow wants: " << tmp->a1.c << "." <<  endl;
-    } else if (tmp->num == 2) {
-      // cout << "First arrow wants: " << tmp->a1.c;
-      // cout << ". Second arrow wants: " << tmp->a2.c << "." << endl;
-    }
+    
     if (tmp->num > 0) {
       // If the arrows are epsilon arrows and don't point to themselves, move
       // penny
@@ -241,12 +259,9 @@ void Machine::move_epsilon() {
 void Machine::start() {
   // destroy all pennys
   pennys.clear();
-  pennys.push_back(Penny(slot));
+  
   // Create a penny at the start node
-  // pennys.push_back(Penny(slot));
-  // Move all pennys until none of the pennys are on epsilons. (keep going until
-  // moved = 0)
-  // this->move_epsilon();
+  pennys.push_back(Penny(slot));
 }
 
 int Machine::input_char(char c) {
@@ -254,17 +269,9 @@ int Machine::input_char(char c) {
   int matches = 0;
   int traversed = 0;
 
-  // int size = pennys.size();
-  // Place a penny at the start
-  // cout << "There are " << size << " pennys in the machine.";
-
-  // don't want to put penny in each time because need to match entire string
-  // pennys.push_back(Penny(slot));
-
-  // cout << " Putting one in and navigating epsilons..." << endl;
+  //  If we wanted to match substrings we'd put a penny in each time
+  //  pennys.push_back(Penny(slot));
   move_epsilon();
-  // cout << "There are " << pennys.size() << " pennys after navigating
-  // epsilons." << endl;
 
   for (auto it = pennys.begin(); it != pennys.end();) {
     loopcount++;
@@ -277,15 +284,6 @@ int Machine::input_char(char c) {
       it = pennys.erase(it);
       continue;
     }
-    /*
-    if (tmp->num==1) {
-      cout << "Arrow wants: " << tmp->a1.c << endl;
-    }
-    else if (tmp->num==2) {
-      cout << "First arrow wants: " << tmp->a1.c << endl;
-      cout << "Second arrow wants: " << tmp->a2.c << endl;
-    }
-    */
     // if there are no arrows on the node, erase the penny
     traversed = 0;
     // for each arrow coming out of the node, check if it is traversable
@@ -321,7 +319,6 @@ int Machine::input_char(char c) {
 void Machine::reset() {
   // Clear all pennys
   pennys.clear();
-  //
 }
 
 #endif
