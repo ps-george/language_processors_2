@@ -14,25 +14,83 @@ final nodes
  */
 
 #include "penny_machine.hpp"
-#include "re2postfix.hpp"
-#include <iostream>
+#include <algorithm>
+//include <iostream>
+#include <list>
 #include <stack>
+#include <string>
+#include <vector>
 
 using namespace std;
 
+
+// Create list of one arrow
+vector<Arrow *> list1(Arrow *a) {
+  vector<Arrow *> v;
+  v.push_back(a);
+  return v;
+}
+
+void route(vector<Arrow *> &alist, nodePtr t1) {
+  for (unsigned int i = 0; i < alist.size(); i++) {
+    (*alist[i]).target = t1;
+  }
+}
+
+vector<Arrow *> join(vector<Arrow *> &alist1, vector<Arrow *> &alist2) {
+  for (unsigned int i = 0; i < alist2.size(); i++) {
+    alist1.push_back(alist2[i]);
+  }
+  return alist1;
+}
+
+bool Arrow::epsilon() const
+{
+ if (c == ' ')
+   return true;
+ else
+   return false;
+}
+
+bool Node::is_match() const {
+  if (!num)
+    return true;
+  else
+    return false;
+};
+
+
 Penny::Penny(nodePtr &ptr) : current(ptr) {}
 
-bool Arrow::traversable(const char &c1) const{
-  if (c==c1 | c==' ') return true;
+bool Arrow::traversable(const char &c1) const {
+  if ((c == c1) | (c == ' '))
+    return true;
   return false;
+}
+
+Machine::~Machine() {
+  pennys.clear();
+
+  std::vector<nodePtr> deleted;
+  for (auto i = memTracker.begin(); i != memTracker.end(); ++i) {
+    // If node has already been deleted, don't delete it again
+    if (std::find(deleted.begin(), deleted.end(), *i) != deleted.end()) {
+      continue;
+    } else {
+      delete *i;
+      deleted.push_back(*i);
+    }
+  }
+
+  memTracker.clear();
 }
 
 Machine::Machine(string psfx) {
   loopcount = 0;
   stack<Frag> fragStack;
   Frag f1, f2, tmpf;
-  Node* tmp;
-  for (int i = 0; i < psfx.length(); i++) {
+  Node *tmp;
+  for (unsigned int i = 0; i < psfx.length(); i++) {
     char c = psfx[i];
     switch (c) {
     // Default, token is a character. Create a Char node and push onto the stack
@@ -41,9 +99,11 @@ Machine::Machine(string psfx) {
       tmp = new Node;
       tmp->a1 = Arrow({c, NULL});
       tmp->num = 1;
+      memTracker.push_back(tmp);
+
       // Create a fragment with start = &tmp and added ptr to arrow to the list
       // tmpf
-      fragStack.push(Frag({tmp,list1(&(tmp->a1))}));
+      fragStack.push(Frag({tmp, list1(&(tmp->a1))}));
       break;
     // Token is a concatentation token
     // Pop the top two items from the stack and join them together
@@ -62,9 +122,10 @@ Machine::Machine(string psfx) {
     case '+':
       f1 = fragStack.top();
       fragStack.pop();
-      // For now, we will use space as epsilon, and deal with it later.
-      // Very difficult to set the char of the second arrow!
-      tmp = new Node({Arrow({' ', NULL}),Arrow({' ', f1.start}), 2});
+      // For now, we will use space as epsilon, and maybe change it later.
+      tmp = new Node({Arrow({' ', NULL}), Arrow({' ', f1.start}), 2});
+      memTracker.push_back(tmp);
+
       route(f1.alist, tmp);
       fragStack.push(Frag({f1.start, list1(&(tmp->a1))}));
       break;
@@ -72,37 +133,38 @@ Machine::Machine(string psfx) {
     // pop the top two items from the stack
     // create a new node pointing to each of the popped off fragments
     // push a new fragment with all the outwards arrows of the two previoius
-    // fragments combine 
+    // fragments combine
     case '|':
       f2 = fragStack.top();
       fragStack.pop();
       f1 = fragStack.top();
       fragStack.pop();
-      tmp = new Node({Arrow({' ', f1.start}),Arrow({' ', f2.start}),2});
+      tmp = new Node({Arrow({' ', f1.start}), Arrow({' ', f2.start}), 2});
+      memTracker.push_back(tmp);
       fragStack.push(Frag({tmp, join(f1.alist, f2.alist)}));
     }
   }
   f1 = fragStack.top();
   fragStack.pop();
   // Connect all unconnected arrows to a matching state
-  // Why do we only have 1 final state?
   Node *match = new Node({});
-  match->end = true;
+  memTracker.push_back(tmp);
+
   route(f1.alist, match);
   slot = f1.start;
 }
 
-int Machine::check_matches(){
+int Machine::check_matches() {
   int matches = 0;
-  for (auto i = pennys.begin();i != pennys.end(); ++i){
-    if ((*i).current->is_match()){
+  for (auto i = pennys.begin(); i != pennys.end(); ++i) {
+    if ((*i).current->is_match()) {
       matches++;
     }
   }
   return matches;
 }
 
-void Machine::move_epsilon(){
+void Machine::move_epsilon() {
   // For each penny in the list
   loopcount++;
   int erased = 0;
@@ -110,31 +172,24 @@ void Machine::move_epsilon(){
     // Get its current node
     erased = 0;
     nodePtr tmp = (*it1).current;
-    // cout << "Epsilon check: ";
-    if (tmp->num==0){
-      // cout << "0 arrows" << endl;
+    if (tmp->num == 0) {
       ++it1;
       continue;
     }
-    if (tmp->num==1) {
-      // cout << "1 arrow wants: " << tmp->a1.c << "." <<  endl;
-    }
-    else if (tmp->num==2) {
-      // cout << "First arrow wants: " << tmp->a1.c;
-      // cout << ". Second arrow wants: " << tmp->a2.c << "." << endl;
-    }
-    if (tmp->num>0) {
-      // If the arrows are epsilon arrows and don't point to themselves, move penny
-      if (tmp->a1.epsilon()){
-        if ((tmp->a1).target != tmp){
+
+    if (tmp->num > 0) {
+      // If the arrows are epsilon arrows and don't point to themselves, move
+      // penny
+      if (tmp->a1.epsilon()) {
+        if ((tmp->a1).target != tmp) {
           pennys.push_back(Penny((tmp->a1).target));
           // Delete the penny?
           it1 = pennys.erase(it1);
           erased++;
         }
       }
-      if (tmp->num==2){
-        if ((tmp->a2).target != tmp){
+      if (tmp->num == 2) {
+        if ((tmp->a2).target != tmp) {
           pennys.push_back(Penny((tmp->a2).target));
           // Delete the penny?
           if (!erased) {
@@ -151,64 +206,45 @@ void Machine::move_epsilon(){
 void Machine::start() {
   // destroy all pennys
   pennys.clear();
-  pennys.push_back(Penny(slot));
   // Create a penny at the start node
-  // pennys.push_back(Penny(slot));
-  // Move all pennys until none of the pennys are on epsilons. (keep going until moved = 0)
-  // this->move_epsilon();
+  pennys.push_back(Penny(slot));
 }
 
 int Machine::input_char(char c) {
   // For each penny in the machine, move all the pennys
   int matches = 0;
   int traversed = 0;
-  
-  // int size = pennys.size();
-  // Place a penny at the start
-  // cout << "There are " << size << " pennys in the machine.";
-  
-  // don't want to put penny in each time because need to match entire string
-  //pennys.push_back(Penny(slot));
-  
-  // cout << " Putting one in and navigating epsilons..." << endl;
+
+  //  If we wanted to match substrings we'd put a penny in each time
+  //  pennys.push_back(Penny(slot));
   move_epsilon();
-  // cout << "There are " << pennys.size() << " pennys after navigating epsilons." << endl;
-  
+
   for (auto it = pennys.begin(); it != pennys.end();) {
     loopcount++;
     // For each penny, get the current node of the penny
     nodePtr tmp = (*it).current;
-    
+
     // If the node has 0 arrows, delete the penny and go to next penny
-    if (((*tmp).num) == 0){
-        matches++;
-        it = pennys.erase(it);
-        continue;
+    if (((*tmp).num) == 0) {
+      matches++;
+      it = pennys.erase(it);
+      continue;
     }
-    /*
-    if (tmp->num==1) {
-      cout << "Arrow wants: " << tmp->a1.c << endl;
-    }
-    else if (tmp->num==2) {
-      cout << "First arrow wants: " << tmp->a1.c << endl;
-      cout << "Second arrow wants: " << tmp->a2.c << endl;
-    }
-    */
     // if there are no arrows on the node, erase the penny
     traversed = 0;
     // for each arrow coming out of the node, check if it is traversable
-    if (tmp->a1.traversable(c)){
+    if (tmp->a1.traversable(c)) {
       // Erase penny
       it = pennys.erase(it);
       // Clone penny at target
       pennys.insert(it, Penny((tmp->a1).target));
       traversed++;
     }
-     
-    if (tmp->num==2){
-      if (tmp->a2.traversable(c)){
+
+    if (tmp->num == 2) {
+      if (tmp->a2.traversable(c)) {
         // If the previous arrow wasn't traversed, erase this penny
-        if (!traversed){
+        if (!traversed) {
           it = pennys.erase(it);
         }
         // Clone penny at target, it points to penny after
@@ -226,8 +262,7 @@ int Machine::input_char(char c) {
   return check_matches();
 }
 
-void Machine::reset(){
+void Machine::reset() {
   // Clear all pennys
   pennys.clear();
-  //
 }
