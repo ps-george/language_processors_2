@@ -121,7 +121,10 @@ std::string re2postfix(std::string re) {
   }
 
   // exhaust all remaining binary operators from the virtual std::stack
-  // 
+  if (!counter.empty()) {
+    throw std::invalid_argument("Mismatched brackets ().");
+  }
+  
   while (--num_char > 0) {
     outQueue.push_back('.');
   }

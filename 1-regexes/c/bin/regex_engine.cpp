@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
   postfix = re2postfix(re);
   // cerr << postfix << endl;
   if (postfix.empty()){
-    std::cerr << "Empty/invalid regex string." << std::endl;
+    std::cerr << "Empty regex string." << std::endl;
     return 1;
   }
   // Construct the machine
