@@ -6,9 +6,6 @@ penny_machine.o: bin/pennymachine.cpp
 bin/regex_engine: bin/regex_engine.cpp bin/penny_machine.o
 	g++ $(CXXFLAGS) -o $@ $^
 
-regex_engine_ref: regex_engine_ref.cpp
-		g++ $(CXXFLAGS) -o $@ $^
-
 clean:
 	@rm -f bin/regex_engine
 	@rm -f regex_engine_ref

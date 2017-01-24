@@ -44,7 +44,9 @@ else
 fi
 CHECKED=$(( ${CHECKED}+1 ));
 
-echo "########################################"
-echo "Passed ${PASSED} out of ${CHECKED} test suites."
+
 # Clean c
 make clean 2>&1 >/dev/null
+
+echo "########################################"
+echo "Passed ${PASSED} out of ${CHECKED} test suites."
