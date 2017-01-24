@@ -2,9 +2,9 @@
 
 # Compare output of programs directly
 echo "========================================"
-echo " Cleaning the temporaries and outputs"
+echo "Cleaning the temporaries and outputs"
 make clean
-echo " Force building regex engine"
+echo "Force building regex engine"
 make bin/regex_engine -B
 
 if [[ "$?" -ne 0 ]]; then
@@ -13,7 +13,6 @@ fi
 
 echo " Force building regex engine reference"
 make regex_engine_ref -B
-echo ""
 echo "========================================="
 
 chmod u+x bin/regex_engine
@@ -37,9 +36,8 @@ for i in test/*.txt; do
   exec 6<&-
 done
 
-echo "########################################"
-echo "Passed ${PASSED} out of ${CHECKED}".
 echo ""
+echo "Passed ${PASSED} out of ${CHECKED} tests."
 
 if [ "${PASSED}" == "${CHECKED}" ]; then
   exit 0

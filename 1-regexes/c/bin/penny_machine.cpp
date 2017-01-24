@@ -201,6 +201,7 @@ void Machine::move_epsilon() {
 }
 
 void Machine::start() {
+  loopcount=0;
   // destroy all pennys
   pennys.clear();
   // Create a penny at the start node
