@@ -11,7 +11,6 @@ if [[ "$?" -ne 0 ]]; then
     echo "Build failed.";
 fi
 echo ""
-mkdir -p test/out
 
 echo "========================================="
 
