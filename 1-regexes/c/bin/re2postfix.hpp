@@ -5,7 +5,6 @@
 #include <vector>
 #include <stack>
 #include <stdexcept>
-#include <iostream>
 
 void remove_pattern(std::string& s, std::string& p) { 
   std::string::size_type n = p.length();
@@ -46,7 +45,6 @@ std::string pre_process(std::string in){
   std::string s(out.begin(), out.end());
   std::string p = "()";
   remove_pattern(s, p);
-  std::cout << s << std::endl;
   return s;
 }
 // Convert infix to postfix function
