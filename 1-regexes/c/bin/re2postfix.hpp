@@ -5,7 +5,13 @@
 #include <vector>
 #include <stack>
 
-std::string replace_alternation(std::string in){
+void remove_pattern(std::string& s, std::string& p) { 
+  std::string::size_type n = p.length();
+  for (std::string::size_type i = s.find(p); i != std::string::npos; i = s.find(p))
+      s.erase(i, n);
+}
+
+std::string pre_process(std::string in){
   std::vector<char> out;
   // If there is a [
   // Replace it with a (
@@ -35,11 +41,14 @@ std::string replace_alternation(std::string in){
         out.push_back('|');
     }
   }
-  return std::string(out.begin(), out.end());
+  std::string s(out.begin(), out.end());
+  std::string p = "()";
+  remove_pattern(s, p);
+  return s;
 }
 // Convert infix to postfix function
 std::string re2postfix(std::string re) {
-  re = replace_alternation(re);
+  re = pre_process(re);
   // Create the std::stacks
   std::stack<char> opStack;
   std::vector<char> outQueue;
