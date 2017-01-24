@@ -22,7 +22,7 @@ make clean 2>&1 >/dev/null
 # Run test script for part b
 cd ../b
 echo "########################################"
-echo "Testing part b...".
+echo "Testing part b..."
 echo ""
 bash ./test_b.sh 2>&1 >/dev/null
 if [[ "$?" -ne "0" ]]; then
@@ -38,7 +38,7 @@ make clean 2>&1 >/dev/null
 # Run test script for part c
 cd ../c
 echo "########################################"
-echo "Testing part c...".
+echo "Testing part c..."
 echo ""
 bash ./test_c.sh 2>&1 >/dev/null
 if [[ "$?" -ne "0" ]]; then
