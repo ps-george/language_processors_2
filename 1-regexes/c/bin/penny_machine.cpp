@@ -15,14 +15,13 @@ final nodes
 
 #include "penny_machine.hpp"
 #include <algorithm>
-//include <iostream>
+// include <iostream>
 #include <list>
 #include <stack>
 #include <string>
 #include <vector>
 
 using namespace std;
-
 
 // Create list of one arrow
 vector<Arrow *> list1(Arrow *a) {
@@ -44,12 +43,11 @@ vector<Arrow *> join(vector<Arrow *> &alist1, vector<Arrow *> &alist2) {
   return alist1;
 }
 
-bool Arrow::epsilon() const
-{
- if (c == ' ')
-   return true;
- else
-   return false;
+bool Arrow::epsilon() const {
+  if (c == ' ')
+    return true;
+  else
+    return false;
 }
 
 bool Node::is_match() const {
@@ -58,7 +56,6 @@ bool Node::is_match() const {
   else
     return false;
 };
-
 
 Penny::Penny(nodePtr &ptr) : current(ptr) {}
 

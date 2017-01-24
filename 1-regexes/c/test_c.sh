@@ -1,54 +1,44 @@
 #!/bin/bash
 
+
+# Compare output of programs directly
 echo "========================================"
 echo " Cleaning the temporaries and outputs"
 make clean
-echo " Force building penny_machine"
-make regex_engine -B
+echo " Force building regex engine"
+make bin/regex_engine -B
+
 if [[ "$?" -ne 0 ]]; then
     echo "Build failed.";
 fi
-echo ""
-mkdir -p test/out
 
+echo " Force building regex engine reference"
+make regex_engine_ref -B
+echo ""
 echo "========================================="
 
+chmod u+x bin/regex_engine
+chmod u+x regex_engine_ref
 PASSED=0
 CHECKED=0
 
-for i in test/in/*.txt; do
-    echo "==========================="
-    echo ""
-    echo "Input file : ${i}"
-    BASENAME=$(basename $i .txt);
-    cat $i | dos2unix | ./regex_engine  > test/out/$BASENAME.stdout.txt  2> test/out/$BASENAME.stderr.txt
-
-    diff <(cat test/ref/$BASENAME.stdout.txt | dos2unix) <(cat test/out/$BASENAME.stdout.txt) > test/out/$BASENAME.diff.txt
-    if [[ "$?" -ne "0" ]]; then
-        echo -e "\nERROR"
-    else
-        PASSED=$(( ${PASSED}+1 ));
-    fi
+for i in test/*.txt; do
+  echo "Input file : ${i}"
+  exec 6< $i
+  read -r regex <&6
+     
+  BASENAME=$(basename $i .txt);
+  diff <(tail --lines=+2 $i | eval ./regex_engine_ref ${regex}) <(tail --lines=+2 $i | eval ./bin/regex_engine ${regex})
+  if [ $? -ne 0 ]; then
+    echo -e "\nERROR"
+  else
+    PASSED=$(( ${PASSED}+1 ));
+  fi
     CHECKED=$(( ${CHECKED}+1 ));
+  exec 6<&-
 done
 
 
 echo "########################################"
 echo "Passed ${PASSED} out of ${CHECKED}".
 echo ""
-
-RELEASE=$(lsb_release -d)
-if [[ $? -ne 0 ]]; then
-    echo ""
-    echo "Warning: This appears not to be a Linux environment"
-    echo "         Make sure you do a final run on a lab machine or an Ubuntu VM"
-else
-    grep -q "Ubuntu 16.04" <(echo $RELEASE)
-    FOUND=$?
-
-    if [[ $FOUND -ne 0 ]]; then
-        echo ""
-        echo "Warning: This appears not to be the target environment"
-        echo "         Make sure you do a final run on a lab machine or an Ubuntu VM"
-    fi
-fi

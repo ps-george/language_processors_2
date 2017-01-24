@@ -19,7 +19,7 @@ chmod u+x regex_substitute
 PASSED=0
 CHECKED=0
 
-for i in test/in/*.txt; do
+for i in test/*.txt; do
   echo "Input file : ${i}"
   exec 6< $i
   read -r sedpattern <&6
