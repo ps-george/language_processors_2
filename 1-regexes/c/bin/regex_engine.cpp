@@ -3,12 +3,11 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
 
 int main(int argc, char *argv[]) {
-  string re;
-  string postfix;
-  string in;
+  std::string re;
+  std::string postfix;
+  std::string in;
   int total = 0;
   // Get the regular expression
   // getline(cin,re);
@@ -23,10 +22,15 @@ int main(int argc, char *argv[]) {
     re = argv[1];
   } else {
     std::cerr << "Too many arguments provided." << std::endl;
+    return 1;
   }
   // Convert it to postfix
   postfix = re2postfix(re);
   // cerr << postfix << endl;
+  if (postfix.empty()){
+    std::cerr << "Empty regex string." << std::endl;
+    return 1;
+  }
   // Construct the machine
   Machine m(postfix);
   // Each time there's a new line
@@ -52,4 +56,5 @@ int main(int argc, char *argv[]) {
       cout << "NoMatch" << endl;
     cerr << "Total loops: " << m.get_loopcount() << endl;
   }
+  return 0;
 }
