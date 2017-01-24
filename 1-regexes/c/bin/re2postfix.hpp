@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <stdexcept>
 
 void remove_pattern(std::string& s, std::string& p) { 
   std::string::size_type n = p.length();
@@ -86,6 +87,9 @@ std::string re2postfix(std::string re) {
 
     // Dump all binary operators that are waiting to be added to output
     case ')':
+      if (counter.empty()){
+        throw std::invalid_argument("Mismatched brackets ().");
+      }
       while (num_char > 1) {
         num_char--;
         outQueue.push_back('.');
