@@ -10,5 +10,5 @@ regex_engine_ref: regex_engine_ref.cpp
 		g++ $(CXXFLAGS) -o $@ $^
 
 clean:
-	-rm bin/regex_engine
-	-rm regex_engine_ref
+	@rm -f bin/regex_engine
+	@rm -f regex_engine_ref

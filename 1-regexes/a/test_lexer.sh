@@ -37,18 +37,8 @@ echo "########################################"
 echo "Passed ${PASSED} out of ${CHECKED}".
 echo ""
 
-RELEASE=$(lsb_release -d)
-if [[ $? -ne 0 ]]; then
-    echo ""
-    echo "Warning: This appears not to be a Linux environment"
-    echo "         Make sure you do a final run on a lab machine or an Ubuntu VM"
+if [ "${PASSED}" == "${CHECKED}" ]; then
+  exit 0
 else
-    grep -q "Ubuntu 16.04" <(echo $RELEASE)
-    FOUND=$?
-
-    if [[ $FOUND -ne 0 ]]; then
-        echo ""
-        echo "Warning: This appears not to be the target environment"
-        echo "         Make sure you do a final run on a lab machine or an Ubuntu VM"
-    fi
+  exit 1
 fi

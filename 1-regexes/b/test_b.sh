@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # Compare output of programs directly
 echo "========================================"
 echo " Cleaning the temporaries and outputs"
@@ -35,7 +34,12 @@ for i in test/*.txt; do
   exec 6<&-
 done
 
-
 echo "########################################"
 echo "Passed ${PASSED} out of ${CHECKED}".
 echo ""
+
+if [ "${PASSED}" == "${CHECKED}" ]; then
+  exit 0
+else
+  exit 1
+fi

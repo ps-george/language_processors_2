@@ -4,4 +4,4 @@ regex_substitute : regex_substitute.cpp
 	g++ $(CXXFLAGS) -o $@ $<
 
 clean :
-	-rm regex_substitute
+	@rm -f regex_substitute

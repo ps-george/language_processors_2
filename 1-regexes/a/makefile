@@ -7,6 +7,6 @@ histogram : histogram_lexer.yy.cpp histogram_main.cpp
 	g++ $(CPPFLAGS) -o histogram  histogram_lexer.yy.cpp histogram_main.cpp
 
 clean :
-	-rm histogram
-	-rm *.yy.cpp
-	-rm test/out/*
+	@rm -f histogram
+	@rm -f *.yy.cpp
+	@rm -f test/out/*
