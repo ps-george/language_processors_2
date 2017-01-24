@@ -20,6 +20,7 @@ final nodes
 #include <stack>
 #include <string>
 #include <vector>
+#include <stdexcept>   
 
 using namespace std;
 
@@ -117,6 +118,9 @@ Machine::Machine(string psfx) {
     // Pop the first item off the stack, create a Node pointing to the start of
     // the fragment and point all the arrows of the fragment to that node
     case '+':
+      if (fragStack.empty()) {
+        throw std::invalid_argument("+ applied to nothing.");
+      }
       f1 = fragStack.top();
       fragStack.pop();
       // For now, we will use space as epsilon, and maybe change it later.
@@ -132,6 +136,9 @@ Machine::Machine(string psfx) {
     // push a new fragment with all the outwards arrows of the two previoius
     // fragments combine
     case '|':
+      if (fragStack.size()<2) {
+        throw std::invalid_argument("| applied but not sufficient arguments to it apply to.");
+      }
       f2 = fragStack.top();
       fragStack.pop();
       f1 = fragStack.top();
