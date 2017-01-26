@@ -1,12 +1,39 @@
+CXX=g++
 CXXFLAGS += -std=c++11 -W -Wall -g
+RM=rm -f
 
-penny_machine.o: bin/pennymachine.cpp
-	g++ $(CXXFLAGS) -c -o $@ $<
+# Set constant directorys
+ODIR = obj
+SDIR = src
+INC = -Iinclude
 
-bin/regex_engine: bin/regex_engine.cpp bin/penny_machine.o
-	g++ $(CXXFLAGS) -o $@ $^
+# List of source files
+_SRCS = regex_engine.cpp penny_machine.cpp
+SRCS = $(patsubst %,$(SDIR)/%,$(_SRCS))
+
+# List of object files
+_OBJS=$(subst .cpp,.o,$(_SRCS))
+OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
+
+all: bin/regex_engine
+
+%/regex_engine: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(INC)
+
+$(ODIR)/%.o: $(SDIR)/%.cpp 
+	$(CXX) $(CXXFLAGS) -c $(INC) -o $@ $<
+
+depend: .depend
+
+.depend: $(OBJS)
+	$(RM) ./.depend
+	$(CXX) $(CXXFLAGS) -MM $^>>./.depend;
 
 clean:
-	@rm -f bin/regex_engine
-	@rm -f bin/penny_machine.o
+	$(RM) $(ODIR)/*
+	$(RM) bin/*
 	@rm -f regex_engine_ref
+
+.PHONY: clean
+
+include .depend
