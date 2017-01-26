@@ -8,4 +8,5 @@ bin/regex_engine: bin/regex_engine.cpp bin/penny_machine.o
 
 clean:
 	@rm -f bin/regex_engine
+	@rm -f bin/penny_machine.o
 	@rm -f regex_engine_ref
