@@ -1,39 +1,23 @@
-CXX=g++
 CXXFLAGS += -std=c++11 -W -Wall -g
-RM=rm -f
 
 # Set constant directorys
-ODIR = obj
-SDIR = src
-INC = -Iinclude
+SDIR=src
+INC=-Iinclude
+# Preprocessor flags, MMD creates dependency files
+CPPFLAGS += -MMD $(INC)
 
 # List of source files
-_SRCS = regex_engine.cpp penny_machine.cpp
-SRCS = $(patsubst %,$(SDIR)/%,$(_SRCS))
-
-# List of object files
-_OBJS=$(subst .cpp,.o,$(_SRCS))
-OBJS = $(patsubst %,$(ODIR)/%,$(_OBJS))
+_SRCS=regex_engine.cpp penny_machine.cpp
+SRCS=$(patsubst %,$(SDIR)/%,$(_SRCS))
 
 all: bin/regex_engine
-
-%/regex_engine: $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(INC)
-
-$(ODIR)/%.o: $(SDIR)/%.cpp 
-	$(CXX) $(CXXFLAGS) -c $(INC) -o $@ $<
-
-depend: .depend
-
-.depend: $(OBJS)
-	$(RM) ./.depend
-	$(CXX) $(CXXFLAGS) -MM $^>>./.depend;
+%/regex_engine: $(SRCS:%.cpp=%.o)
+	g++ $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(INC)
 
 clean:
-	$(RM) $(ODIR)/*
-	$(RM) bin/*
-	@rm -f regex_engine_ref
+	rm -f bin/*
+	rm -f regex_engine_ref
 
 .PHONY: clean
 
-include .depend
+-include $(_SRCS:%.cpp=%.d)
