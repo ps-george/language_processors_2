@@ -11,9 +11,12 @@ _SRCS=regex_engine.cpp penny_machine.cpp
 SRCS=$(patsubst %,$(SDIR)/%,$(_SRCS))
 
 all: bin/regex_engine
+	
 %/regex_engine: $(SRCS:%.cpp=%.o)
-	g++ $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(INC)
+	g++ $(CPPFLAGS) $(CXXFLAGS) -o $@ $^
 
+regex_engine_ref: regex_engine_ref.cpp
+	g++ $(CXXFLAGS) -o $@ $^
 clean:
 	rm -f bin/*
 	rm -f regex_engine_ref
