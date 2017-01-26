@@ -13,6 +13,7 @@ SRCS=$(patsubst %,$(SDIR)/%,$(_SRCS))
 all: bin/regex_engine
 	
 %/regex_engine: $(SRCS:%.cpp=%.o)
+	mkdir -p bin
 	g++ $(CPPFLAGS) $(CXXFLAGS) -o $@ $^
 
 regex_engine_ref: regex_engine_ref.cpp
