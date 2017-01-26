@@ -11,7 +11,7 @@ if [[ "$?" -ne 0 ]]; then
     echo "Build failed.";
 fi
 
-echo " Force building regex engine reference"
+echo "Force building regex engine reference"
 make regex_engine_ref -B
 echo "========================================="
 
