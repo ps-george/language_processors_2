@@ -1,0 +1,209 @@
+Note that each submission has not been looked at manually, they
+have only been randomly sampled to get an idea if the test automation.
+is working for most submission. If the build system appears
+to be broken, please raise an issue (though stability of these
+runs is not a huge priority).
+
+gsp14 : Cloning repo
+Cloning into 'gsp14'...
+gsp14 : Checking out branch soft-2017-01-26 if it exists...
+error: pathspec 'soft-2017-01-26' did not match any file(s) known to git.
+gsp14 : Checking out specified hash and creating new branch soft-2017-01-26
+Switched to a new branch 'soft-2017-01-26'
+Already on 'soft-2017-01-26'
+gsp14 : Checking we're on the right hash 5ffb905e6a3405fa34bbc5fd83481a359e858f7b...
+cd tmp/$U && git rev-parse $RUN
+
+do_or_die "Overwriting test inputs with ones from spec." \
+    cp $SCRATCH/spec/1-regexes/a/test/in/??.txt $REPO/1-regexes/a/test/in
+gsp14 : Overwriting test inputs with ones from spec.
+
+do_or_die "Overwriting test outputs with ones from spec." \
+    cp $SCRATCH/spec/1-regexes/a/test/ref/??.stdout.txt $REPO/1-regexes/a/test/ref
+gsp14 : Overwriting test outputs with ones from spec.
+
+do_or_die "Overwriting test_lexer.sh with one from spec." \
+    cp $SCRATCH/spec/1-regexes/a/test_lexer.sh $REPO/1-regexes/a/test_lexer.sh
+gsp14 : Overwriting test_lexer.sh with one from spec.
+
+do_or_die "Ensuring test_lexer.sh is executable." \
+    chmod u+x $REPO/1-regexes/a/test_lexer.sh
+gsp14 : Ensuring test_lexer.sh is executable.
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 1"
+gsp14 : ## Part 1
+
+log_msg "Part 1 : Removing any existing binary"
+gsp14 : Part 1 : Removing any existing binary
+(cd $REPO/1-regexes/a && rm histogram)
+rm: cannot remove 'histogram': No such file or directory
+
+log_msg "Part 1 : Running test"
+gsp14 : Part 1 : Running test
+(cd $REPO/1-regexes/a && ./test_lexer.sh)
+========================================
+ Cleaning the temporaries and outputs
+ Force building histogram
+flex -o histogram_lexer.yy.cpp  histogram_lexer.flex
+g++ -W -Wall -g -std=gnu++11 -o histogram  histogram_lexer.yy.cpp histogram_main.cpp
+histogram_lexer.yy.cpp: In function ‘int yy_get_next_buffer()’:
+histogram_lexer.yy.cpp:1063:44: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if ((int) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+                                            ^
+histogram_lexer.yy.cpp: At global scope:
+histogram_lexer.yy.cpp:1139:17: warning: ‘void yyunput(int, char*)’ defined but not used [-Wunused-function]
+     static void yyunput (int c, char * yy_bp )
+                 ^
+
+=========================================
+===========================
+
+Input file : test/in/01.txt
+===========================
+
+Input file : test/in/02.txt
+===========================
+
+Input file : test/in/03.txt
+===========================
+
+Input file : test/in/04.txt
+===========================
+
+Input file : test/in/05.txt
+===========================
+
+Input file : test/in/06.txt
+===========================
+
+Input file : test/in/07.txt
+===========================
+
+Input file : test/in/08.txt
+===========================
+
+Input file : test/in/09.txt
+===========================
+
+Input file : test/in/10.txt
+===========================
+
+Input file : test/in/11.txt
+===========================
+
+Input file : test/in/12.txt
+===========================
+
+Input file : test/in/13.txt
+===========================
+
+Input file : test/in/14.txt
+===========================
+
+Input file : test/in/15.txt
+===========================
+
+Input file : test/in/16.txt
+===========================
+
+Input file : test/in/17.txt
+===========================
+
+Input file : test/in/18.txt
+===========================
+
+Input file : test/in/19.txt
+===========================
+
+Input file : test/in/20.txt
+===========================
+
+Input file : test/in/21.txt
+===========================
+
+Input file : test/in/22.txt
+===========================
+
+Input file : test/in/23.txt
+===========================
+
+Input file : test/in/24.txt
+===========================
+
+Input file : test/in/25.txt
+===========================
+
+Input file : test/in/26.txt
+===========================
+
+Input file : test/in/27.txt
+########################################
+Passed 27 out of 27.
+
+
+log_msg "Part 1 : Capturing outputs"
+gsp14 : Part 1 : Capturing outputs
+tar -czf $LOGDIR/1-regexes-a.tar.gz  $REPO/1-regexes/a/test/out/*
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 2"
+gsp14 : ## Part 2
+
+log_msg "Part 2 : Removing any existing binary"
+gsp14 : Part 2 : Removing any existing binary
+(cd $REPO/1-regexes/b && rm regex_substitute)
+rm: cannot remove 'regex_substitute': No such file or directory
+
+log_msg "Part 2 : Attempting to build regex_substitute"
+gsp14 : Part 2 : Attempting to build regex_substitute
+(cd $REPO/1-regexes/b && make regex_substitute)
+g++ -std=c++11 -W -Wall -g -o regex_substitute regex_substitute.cpp
+
+if [[ -f $REPO/1-regexes/b/regex_substitute ]]; then
+    log_msg "Part 2 : Putting value through, expecting output of 'yxzx'"
+    (cd $REPO/1-regexes/b && echo "xyxz" | ./regex_substitute "(.)(.)" "\2\1")
+else
+    log_msg "Part 2 : No binary built"
+fi
+gsp14 : Part 2 : Putting value through, expecting output of 'yxzx'
+yxzx
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 3"
+gsp14 : ## Part 3
+
+log_msg "Part 3 : Removing any existing binary"
+gsp14 : Part 3 : Removing any existing binary
+(cd $REPO/1-regexes/c && rm bin/regex_engine)
+rm: cannot remove 'bin/regex_engine': No such file or directory
+
+log_msg "Part 3 : Attempting to build bin/regex_engine"
+gsp14 : Part 3 : Attempting to build bin/regex_engine
+(cd $REPO/1-regexes/c && make bin/regex_engine)
+g++ -std=c++11 -W -Wall -g   -c -o bin/penny_machine.o bin/penny_machine.cpp
+g++ -std=c++11 -W -Wall -g -o bin/regex_engine bin/regex_engine.cpp bin/penny_machine.o
+
+if [[ -f $REPO/1-regexes/c/bin/regex_engine ]]; then
+    log_msg "Part 3 : Single check, expect NoMatch,Match,Match,NoMatch"
+    (cd $REPO/1-regexes/c && echo -e "a\nab\nabb\nabab" | bin/regex_engine "ab+" )
+else
+    log_msg "Part 3 : No binary built"
+fi
+gsp14 : Part 3 : Single check, expect NoMatch,Match,Match,NoMatch
+NoMatch
+Total loops: 3
+Match
+Total loops: 6
+Match
+Total loops: 10
+NoMatch
+Total loops: 12
+
+gsp14 : Test Complete
