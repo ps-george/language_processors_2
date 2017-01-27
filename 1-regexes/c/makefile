@@ -9,8 +9,6 @@ CPPFLAGS += -MMD $(INC)
 # List of source files
 _SRCS=regex_engine.cpp penny_machine.cpp
 SRCS=$(patsubst %,$(SDIR)/%,$(_SRCS))
-
-all: bin/regex_engine
 	
 bin/regex_engine: $(SRCS:%.cpp=%.o)
 	mkdir -p bin
