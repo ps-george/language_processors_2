@@ -32,7 +32,7 @@ for i in test/*.txt; do
   else
     PASSED=$(( ${PASSED}+1 ));
   fi
-    CHECKED=$(( ${CHECKED}+1 ));
+  CHECKED=$(( ${CHECKED}+1 ));
   exec 6<&-
 done
 
