@@ -24,7 +24,6 @@ for i in test/in/*.txt; do
     if [[ "$?" -ne "0" ]]; then
         echo -e "\nERROR"
     else
-        echo -e "\nERROR"
         PASSED=$(( ${PASSED}+1 ));
     fi
     CHECKED=$(( ${CHECKED}+1 ));
