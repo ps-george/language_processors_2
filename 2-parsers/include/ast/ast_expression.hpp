@@ -16,8 +16,7 @@ public:
     //! Evaluate the tree using the given mapping of variables to numbers
     virtual double evaluate(
         const std::map<std::string,double> &bindings
-    ) const
-    { throw std::runtime_error("Not implemented."); }
+    ) const =0;
 
     //! Return a new tree which is the derivative w.r.t. given variable
     virtual const Expression *differentiate(

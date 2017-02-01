@@ -10,12 +10,22 @@ int main(int argc, char *argv[])
     //  - read the variable name
     //  - parse the value
     //  - insert into the bindings map
+    std::string varname;
+    double val;
+    fprintf(stderr, "Bindings:\n");
+    for (int i = 1; i < argc - 1; i+=2){
+      varname = std::string(argv[i]);
+      val = atof(argv[i+1]);
+      bindings[varname] = val;
+      fprintf(stderr, "%s=%f\n", varname.c_str(), val);
+    }
+    fprintf(stderr, "\n");
     
     const Expression *ast=parseAST();
     
     double res=ast->evaluate(bindings);
     
     // TODO : print out with 6 decimal digits of precision
-    
+    fprintf(stdout, "%6f", res);
     return 0;
 }

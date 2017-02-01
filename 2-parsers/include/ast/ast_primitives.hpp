@@ -1,6 +1,9 @@
 #ifndef ast_primitives_hpp
 #define ast_primitives_hpp
 
+// To satisfy my linter...
+#include "ast/ast_expression.hpp"
+
 #include <string>
 #include <iostream>
 
@@ -22,6 +25,13 @@ public:
         std::cout<<id;
     }
     
+    virtual double evaluate(
+        const std::map<std::string,double> &bindings
+    ) const override
+    {
+      std::cerr << bindings.find(this->getId())->second;
+      return bindings.find(this->getId())->second;
+    }      
 };
 
 class Number
@@ -42,6 +52,13 @@ public:
         std::cout<<value;
     }
     
+    virtual double evaluate(
+        const std::map<std::string,double> &bindings
+    ) const override
+    {
+      std::cerr << this->getValue();
+      return this->getValue();
+    }      
 };
 
 
