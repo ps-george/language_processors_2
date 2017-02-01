@@ -64,6 +64,14 @@ public:
     { 
         return new DivOperator(this->getArg()->differentiate(variable), this->getArg());
     }
+    
+    virtual const Expression *shrink(
+    ) const {
+      if (this->getArg()->evaluate() == exp(1)){
+        return new Number(0);
+      }
+      return this;
+    };   
 };
 
 class ExpFunction
@@ -102,6 +110,7 @@ public:
       if (this->getArg()->evaluate() == 0){
         return new Number(1);
       }
+      return this;
     }
 };
 
@@ -133,6 +142,14 @@ public:
     { 
         return new DivOperator(new MulOperator(new Number(0.5),this->getArg()->differentiate(variable)), new SqrtFunction(this->getArg()));
     }
+    
+    virtual const Expression *shrink(
+    ) const {
+      if (this->getArg()->evaluate() == 0){
+        return new Number(0);
+      }
+      return this;
+    };   
 };
 
 

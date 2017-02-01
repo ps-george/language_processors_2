@@ -79,8 +79,14 @@ public:
     virtual const Expression *shrink(
     ) const 
     {
-      if (this->evaluate() == 0){
+      if ((this->getLeft()->evaluate() == 0)&&(this->getRight()->evaluate() == 0)){
         return new Number(0);
+      }
+      else if (this->getLeft()->evaluate() == 0){
+        return this->getRight();
+      }
+      else if (this->getRight()->evaluate() == 0){
+        return this->getLeft();
       }
       return this;
     }
@@ -143,7 +149,9 @@ public:
     }
     virtual double evaluate() const override
     {
-      return this->getLeft()->evaluate() * this->getRight()->evaluate();
+      if ((this->getLeft()->evaluate()==0)||(this->getRight()->evaluate()==0))
+        return 0;
+      return 1;
     }
     virtual const Expression *differentiate(
         const std::string &variable
@@ -161,7 +169,7 @@ public:
     virtual const Expression *shrink(
     ) const 
     {
-      if (this->evaluate() == 0){
+      if ((this->getLeft()->evaluate() == 0) || (this->getRight()->evaluate() == 0)){
         return new Number(0);
       }
       return this;
@@ -210,7 +218,15 @@ public:
           )
         )
         ;
-    }   
+    }
+    
+    virtual const Expression *shrink(
+    ) const {
+      if (this->getLeft()->evaluate() == 0){
+        return new Number(0);
+      }
+      return this;
+    };   
 };
 
 #endif

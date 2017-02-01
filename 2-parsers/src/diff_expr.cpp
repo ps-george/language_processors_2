@@ -14,14 +14,15 @@ int main(int argc, char *argv[])
     
     const Expression *ast=parseAST();
     
-    const Expression *diff1; const Expression *diff2;
+    const Expression *diff1;
     diff1 = ast->differentiate(variables[0]);
-    
     for (int i = 1; i < variables.size(); ++i){
-      
       diff1 = diff1->differentiate(variables[i]);
+      
     }
-    diff1->print();
+    const Expression *shrunk = diff1->shrink();
+    
+    shrunk->print();
     fprintf(stdout, "\n");
     return 0;
 }

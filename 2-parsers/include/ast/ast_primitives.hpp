@@ -42,6 +42,11 @@ public:
     ) const
     { 
     return new Number(0); }    
+    
+    virtual const Expression *shrink(
+    ) const {
+      return this;
+    };
 };
 
 class Variable
@@ -71,7 +76,7 @@ public:
     
     virtual double evaluate() const override
     {
-      return this;
+      return 1;
     }
     
     virtual const Expression *differentiate(
@@ -83,7 +88,10 @@ public:
     }
       return new Number(0); 
     }    
-
+    virtual const Expression *shrink(
+    ) const {
+      return this;
+    };
 };
 
 
