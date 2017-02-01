@@ -118,7 +118,13 @@ public:
         const std::string &variable
     ) const override
     { 
-        return this;
+        return new AddOperator(
+          new MulOperator(
+            this->getLeft()->differentiate(variable),
+            this->getRight()),
+          new MulOperator(
+            this->getLeft(),
+            this->getRight()->differentiate(variable)));
     }   
 };
 

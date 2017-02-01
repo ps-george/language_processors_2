@@ -6,11 +6,6 @@
 int main(int argc, char *argv[])
 {
     std::vector<std::string> variables;
-    
-    // TODO : for each pair of arguments:
-    //  - read the variable name
-    //  - parse the value
-    //  - insert into the bindings map
     std::string var;
     fprintf(stderr, "W.r.t:\n");
     for (int i = 1; i < argc; ++i){
