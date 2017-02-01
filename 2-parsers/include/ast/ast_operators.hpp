@@ -61,7 +61,7 @@ public:
         const std::map<std::string,double> &bindings
     ) const override
     {
-      return this->getLeft()->evaluate(bindings) + this->getRight()->evaluate(bindings);
+      return getLeft()->evaluate(bindings) + getRight()->evaluate(bindings);
     }
     
 };

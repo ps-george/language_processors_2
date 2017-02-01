@@ -19,13 +19,11 @@ int main(int argc, char *argv[])
       bindings[varname] = val;
       fprintf(stderr, "%s=%f\n", varname.c_str(), val);
     }
-    fprintf(stderr, "\n");
     
     const Expression *ast=parseAST();
     
     double res=ast->evaluate(bindings);
-    
     // TODO : print out with 6 decimal digits of precision
-    fprintf(stdout, "%6f", res);
+    fprintf(stdout, "%f\n", res);
     return 0;
 }

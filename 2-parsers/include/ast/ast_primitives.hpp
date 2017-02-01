@@ -29,7 +29,6 @@ public:
         const std::map<std::string,double> &bindings
     ) const override
     {
-      std::cerr << bindings.find(this->getId())->second;
       return bindings.find(this->getId())->second;
     }      
 };
@@ -56,7 +55,6 @@ public:
         const std::map<std::string,double> &bindings
     ) const override
     {
-      std::cerr << this->getValue();
       return this->getValue();
     }      
 };

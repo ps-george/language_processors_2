@@ -17,7 +17,8 @@ bin/eval_expr : src/eval_expr.o src/maths_parser.tab.o src/maths_lexer.yy.o src/
 
 
 clean :
-	rm src/*.o
-	rm bin/*
-	rm src/*.tab.cpp
-	rm src/*.yy.cpp
+	rm -f src/*.o
+	rm -f src/*.tab.*
+	rm -f bin/*
+	rm -f src/*.tab.cpp
+	rm -f src/*.yy.cpp
