@@ -150,7 +150,21 @@ public:
         const std::string &variable
     ) const override
     { 
-        return this;
+        return new DivOperator(
+          new SubOperator(
+            new MulOperator(
+              this->getLeft()->differentiate(variable),
+              this->getRight()),
+            new MulOperator(
+              this->getRight()->differentiate(variable),
+              this->getLeft())
+          ),
+          new MulOperator(
+            this->getRight(),
+            this->getRight()
+          )
+        )
+        ;
     }   
 };
 
