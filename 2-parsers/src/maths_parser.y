@@ -24,7 +24,7 @@
 
 %type <expr> EXPR TERM FACTOR
 %type <number> T_NUMBER
-%type <string> T_VARIABLE T_LOG T_EXP T_SQRT FUNCTION_NAME
+%type <string> T_VARIABLE T_LOG T_EXP T_SQRT
 
 %start ROOT
 
@@ -32,14 +32,21 @@
 
 ROOT : EXPR { g_root = $1; }
 
-EXPR : TERM                 { $$ = $1; }
+EXPR : EXPR T_PLUS TERM     { $$ = new AddOperator($1,$3); }
+     | EXPR T_MINUS TERM    { $$ = new SubOperator($1,$3); }
+     | TERM                 { $$ = $1; }
 
-TERM : FACTOR               { $$ = $1; }
+TERM : TERM T_TIMES FACTOR  { $$ = new MulOperator($1,$3); }
+     | TERM T_DIVIDE FACTOR { $$ = new DivOperator($1,$3); }
+     | FACTOR               { $$ = $1; }
 
-FACTOR : T_NUMBER           { $$ = new Number( $1 ); }
-       | T_LBRACKET EXPR T_RBRACKET { $$ = $2; }
+FACTOR : T_LBRACKET EXPR T_RBRACKET { $$ = $2; }
+       | T_LOG T_LBRACKET TERM T_RBRACKET { $$ = new LogFunction($3); }
+       | T_EXP T_LBRACKET TERM T_RBRACKET { $$ = new ExpFunction($3); }
+       | T_SQRT T_LBRACKET TERM T_RBRACKET { $$ = new SqrtFunction($3); }
+       | T_VARIABLE                 { $$ = new Variable( *$1 ); }
+       | T_NUMBER                   { $$ = new Number( $1 ); }
 
-FUNCTION_NAME : T_LOG { $$ = new std::string("log"); }
 
 %%
 
