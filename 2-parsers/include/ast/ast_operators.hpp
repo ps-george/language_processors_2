@@ -63,7 +63,13 @@ public:
     {
       return getLeft()->evaluate(bindings) + getRight()->evaluate(bindings);
     }
-    
+
+    virtual const Expression *differentiate(
+        const std::string &variable
+    ) const override
+    { 
+        return new AddOperator(this->getLeft()->differentiate(variable),this->getRight()->differentiate(variable));
+    }
 };
 
 class SubOperator
@@ -81,7 +87,14 @@ public:
     ) const override
     {
       return this->getLeft()->evaluate(bindings) - this->getRight()->evaluate(bindings);
-    }    
+    }
+    
+    virtual const Expression *differentiate(
+        const std::string &variable
+    ) const override
+    { 
+        return new SubOperator(this->getLeft()->differentiate(variable),this->getRight()->differentiate(variable));
+    }
 };
 
 class MulOperator
@@ -99,7 +112,14 @@ public:
     ) const override
     {
       return this->getLeft()->evaluate(bindings) * this->getRight()->evaluate(bindings);
-    }        
+    }
+    
+    virtual const Expression *differentiate(
+        const std::string &variable
+    ) const override
+    { 
+        return this;
+    }   
 };
 
 class DivOperator
@@ -119,7 +139,13 @@ public:
     {
       return this->getLeft()->evaluate(bindings) / this->getRight()->evaluate(bindings);
     }   
-    
+
+    virtual const Expression *differentiate(
+        const std::string &variable
+    ) const override
+    { 
+        return this;
+    }   
 };
 
 #endif

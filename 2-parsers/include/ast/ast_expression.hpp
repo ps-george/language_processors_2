@@ -21,8 +21,7 @@ public:
     //! Return a new tree which is the derivative w.r.t. given variable
     virtual const Expression *differentiate(
         const std::string &variable
-    ) const
-    { throw std::runtime_error("Not implemented."); }
+    ) const =0;
 };
 
 

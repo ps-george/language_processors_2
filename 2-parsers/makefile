@@ -15,6 +15,9 @@ bin/eval_expr : src/eval_expr.o src/maths_parser.tab.o src/maths_lexer.yy.o src/
 	mkdir -p bin
 	g++ $(CPPFLAGS) -o bin/eval_expr $^
 
+bin/diff_expr: src/diff_expr.o src/maths_parser.tab.o src/maths_lexer.yy.o src/maths_parser.tab.o
+	mkdir -p bin
+	g++ $(CPPFLAGS) -o bin/diff_expr $^
 
 clean :
 	rm -f src/*.o

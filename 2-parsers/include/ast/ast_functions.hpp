@@ -2,6 +2,7 @@
 #define ast_functions_hpp
 
 #include "ast_expression.hpp"
+#include "ast_operators.hpp"
 
 #include <cmath>
 
@@ -51,6 +52,13 @@ public:
     {
       return log(this->getArg()->evaluate(bindings));
     }
+    
+    virtual const Expression *differentiate(
+        const std::string &variable
+    ) const override
+    { 
+        return new DivOperator(this->getArg()->differentiate(variable), this->getArg());
+    }
 };
 
 class ExpFunction
@@ -71,6 +79,12 @@ public:
       return exp(this->getArg()->evaluate(bindings));
     }
     
+    virtual const Expression *differentiate(
+        const std::string &variable
+    ) const override
+    { 
+        return new MulOperator(this->getArg()->differentiate(variable), new ExpFunction(this->getArg()));
+    }
 };
 
 class SqrtFunction
@@ -89,6 +103,13 @@ public:
     ) const override
     {
       return sqrt(this->getArg()->evaluate(bindings));
+    }
+    
+    virtual const Expression *differentiate(
+        const std::string &variable
+    ) const override
+    { 
+        return new DivOperator(new MulOperator(new Number(0.5),this->getArg()->differentiate(variable)), new SqrtFunction(this->getArg()));
     }
 };
 
