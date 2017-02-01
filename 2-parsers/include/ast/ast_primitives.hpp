@@ -31,6 +31,12 @@ public:
     {
       return this->getValue();
     }
+    
+    virtual double evaluate() const override
+    {
+      return this->getValue();
+    }
+    
     virtual const Expression *differentiate(
         const std::string &variable
     ) const
@@ -61,6 +67,11 @@ public:
     ) const override
     {
       return bindings.find(this->getId())->second;
+    }
+    
+    virtual double evaluate() const override
+    {
+      return this;
     }
     
     virtual const Expression *differentiate(

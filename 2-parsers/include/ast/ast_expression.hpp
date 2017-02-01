@@ -17,10 +17,16 @@ public:
     virtual double evaluate(
         const std::map<std::string,double> &bindings
     ) const =0;
+    
+    virtual double evaluate() const =0;
 
     //! Return a new tree which is the derivative w.r.t. given variable
     virtual const Expression *differentiate(
         const std::string &variable
+    ) const =0;
+    
+    //! Return a new tree without all the zeros
+    virtual const Expression *shrink(
     ) const =0;
 };
 

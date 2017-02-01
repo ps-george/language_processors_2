@@ -53,6 +53,11 @@ public:
       return log(this->getArg()->evaluate(bindings));
     }
     
+    virtual double evaluate() const override
+    {
+      return log(this->getArg()->evaluate());
+    }
+    
     virtual const Expression *differentiate(
         const std::string &variable
     ) const override
@@ -79,11 +84,24 @@ public:
       return exp(this->getArg()->evaluate(bindings));
     }
     
+    virtual double evaluate() const override
+    {
+      return exp(this->getArg()->evaluate());
+    }
+    
     virtual const Expression *differentiate(
         const std::string &variable
     ) const override
     { 
         return new MulOperator(this->getArg()->differentiate(variable), new ExpFunction(this->getArg()));
+    }
+    
+    virtual const Expression *shrink(
+    ) const 
+    {
+      if (this->getArg()->evaluate() == 0){
+        return new Number(1);
+      }
     }
 };
 
@@ -105,6 +123,10 @@ public:
       return sqrt(this->getArg()->evaluate(bindings));
     }
     
+    virtual double evaluate() const override
+    {
+      return sqrt(this->getArg()->evaluate());
+    }
     virtual const Expression *differentiate(
         const std::string &variable
     ) const override
