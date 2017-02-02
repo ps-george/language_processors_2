@@ -47,15 +47,21 @@ public:
     
     virtual void print_xml() const override
     {
-        std::cout<<"<Operator id =\""<<<getOpcode()<<"\">\n\t";
-        std::cout<<"<Left\n\t>"
-          left->print();
-        std::cout<<"<\n\t/Left>"
-        std::cout<<getOpcode();
-        std::cout<<"<Right\n\t>"
-          right->print();
-        std::cout<<"\n\t</Right>"
-        std::cout<<"</Operator>";
+        std::cout<<"<Operator id =\""<<getOpcode()<<"\">\n";
+        this->tab(true);
+        std::cout<<"<Left>\n";
+          this->tab(true);
+          left->print_xml();
+          this->tab(false);
+        std::cout<<"</Left>\n";
+        this->tab();
+        std::cout<<"<Right>\n";
+          this->tab(true);
+          right->print_xml();
+          this->tab(false);
+        std::cout<<"</Right>\n";
+        this->tab(false);
+        std::cout<<"</Operator>\n";
     }
 };
 

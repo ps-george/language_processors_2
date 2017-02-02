@@ -27,7 +27,7 @@ public:
     
     virtual void print_xml() const override
     {
-        std::cout<<"<Number value=\""<< value << "/>";
+        std::cout<<"<Number value=\""<< value << "\"/>\n";
     }
     
     virtual double evaluate(
@@ -63,8 +63,7 @@ public:
     
     virtual void print_xml() const override
     {
-        std::cout<<"<Variable id=\""<< id << "/>";
-        
+        std::cout<<"<Variable id=\""<< id << "\"/>\n";
     }
     
     virtual double evaluate(

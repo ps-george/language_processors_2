@@ -7,6 +7,8 @@
 
 class Expression
 {
+private:
+  static int tabcount;
 public:
     virtual ~Expression()
     {}
@@ -22,6 +24,26 @@ public:
     virtual const Expression *differentiate(
         const std::string &variable
     ) const =0;
+    
+    static void tab(bool open) {
+      if (open){
+        tabcount = tabcount + 1;
+      }
+      else {
+        tabcount = tabcount - 1;
+      }
+      //std::cout << tabcount;
+      for (int i = 0; i < tabcount; i++){
+        std::cout << '\t';
+      }
+    }
+    
+    void tab() const {
+      //std::cout << "n" << tabcount;
+      for (int i = 0; i < tabcount; i++){
+        std::cout << '\t';
+      }
+    }
 };
 
 
