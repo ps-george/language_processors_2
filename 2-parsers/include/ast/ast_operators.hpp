@@ -49,13 +49,13 @@ public:
     {
         std::cout<<"<Operator id =\""<<getOpcode()<<"\">\n";
         this->tab(true);
-        std::cout<<"<Left>\n";
+        std::cout<<"<Left pid =\""<<getOpcode()<<"\">\n";
           this->tab(true);
           left->print_xml();
           this->tab(false);
         std::cout<<"</Left>\n";
         this->tab();
-        std::cout<<"<Right>\n";
+        std::cout<<"<Right pid =\""<<getOpcode()<<"\">\n";
           this->tab(true);
           right->print_xml();
           this->tab(false);
