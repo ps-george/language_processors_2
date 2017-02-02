@@ -27,6 +27,10 @@ public:
     const Expression *getArg() const
     { return arg; }
 
+    virtual bool is_opf() const override{
+      return true;
+    }
+    
     virtual void print() const override
     {
         std::cout<<getFunction()<<"( ";
@@ -74,13 +78,17 @@ public:
         return new DivOperator(this->getArg()->differentiate(variable), this->getArg());
     }
     
-    virtual const Expression *shrink(
-    ) const {
-      if (this->getArg()->evaluate() == exp(1)){
-        return new Number(0);
+    virtual const Expression *shrink() const {
+      if (this->getArg()->is_opf()){
+        return (new LogFunction(this->getArg()->shrink()))->shrink();
+      }
+      else if (this->getArg()->is_number()){
+        if (this->getArg()->evaluate()==1){
+          return new Number(0);
+        }
       }
       return this;
-    };   
+    };
 };
 
 class ExpFunction
@@ -113,14 +121,17 @@ public:
         return new MulOperator(this->getArg()->differentiate(variable), new ExpFunction(this->getArg()));
     }
     
-    virtual const Expression *shrink(
-    ) const 
-    {
-      if (this->getArg()->evaluate() == 0){
-        return new Number(1);
+    virtual const Expression *shrink() const {
+      if (this->getArg()->is_opf()){
+        return (new ExpFunction(this->getArg()->shrink()))->shrink();
+      }
+      else if (this->getArg()->is_number()){
+        if (this->getArg()->evaluate()==0){
+          return new Number(1);
+        }
       }
       return this;
-    }
+    };  
 };
 
 class SqrtFunction
@@ -152,10 +163,18 @@ public:
         return new DivOperator(new MulOperator(new Number(0.5),this->getArg()->differentiate(variable)), new SqrtFunction(this->getArg()));
     }
     
-    virtual const Expression *shrink(
-    ) const {
-      if (this->getArg()->evaluate() == 0){
-        return new Number(0);
+    virtual const Expression *shrink() const {
+      int v = 0;
+      if (this->getArg()->is_opf()){
+        return (new SqrtFunction(this->getArg()->shrink()))->shrink();
+      }
+      else if (this->getArg()->is_number()){
+        v = this->getArg()->evaluate();
+        // If sqrt is a whole number
+        int s = sqrt(v);
+        if ((s*s) == v) {
+          return new Number(sqrt(v));
+        }
       }
       return this;
     };   

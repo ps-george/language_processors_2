@@ -58,7 +58,7 @@ public:
       return true;
     }
     
-    virtual bool is_op() const override{
+    virtual bool is_opf() const override{
       return false;
     }
 };
@@ -118,7 +118,7 @@ public:
       return true;
     }
     
-    virtual bool is_op() const override{
+    virtual bool is_opf() const override{
       return false;
     }
 };

@@ -39,7 +39,7 @@ public:
       return false;
     }
     
-    virtual bool is_op() const{
+    virtual bool is_opf() const{
       if ((!(this->is_number())) && (!(this->is_variable()))){
         return true;
       }
