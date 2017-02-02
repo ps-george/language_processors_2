@@ -36,9 +36,9 @@ public:
     
     virtual void print_xml() const override
     {
-        std::cout<<getFunction()<<"( ";
-        arg->print_xml();
-        std::cout<<" )";
+        std::cout<<"<Function id=\""<<getFunction()<<"\">\n\t";
+          arg->print_xml();
+        std::cout<<"</Function>";
     }
 };
 

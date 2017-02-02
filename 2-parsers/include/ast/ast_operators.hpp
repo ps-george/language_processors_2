@@ -44,6 +44,19 @@ public:
         right->print();
         std::cout<<" )";
     }
+    
+    virtual void print_xml() const override
+    {
+        std::cout<<"<Operator id =\""<<<getOpcode()<<"\">\n\t";
+        std::cout<<"<Left\n\t>"
+          left->print();
+        std::cout<<"<\n\t/Left>"
+        std::cout<<getOpcode();
+        std::cout<<"<Right\n\t>"
+          right->print();
+        std::cout<<"\n\t</Right>"
+        std::cout<<"</Operator>";
+    }
 };
 
 class AddOperator

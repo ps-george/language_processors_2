@@ -25,6 +25,11 @@ public:
         std::cout<<value;
     }
     
+    virtual void print_xml() const override
+    {
+        std::cout<<"<Number value=\""<< value << "/>";
+    }
+    
     virtual double evaluate(
         const std::map<std::string,double> &bindings
     ) const override
@@ -54,6 +59,12 @@ public:
     virtual void print() const override
     {
         std::cout<<id;
+    }
+    
+    virtual void print_xml() const override
+    {
+        std::cout<<"<Variable id=\""<< id << "/>";
+        
     }
     
     virtual double evaluate(
