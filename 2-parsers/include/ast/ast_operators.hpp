@@ -235,58 +235,54 @@ public:
       int v = 0;
       // If both sides are functions/operators, shrink them
       if ((this->getLeft()->is_op()) && (this->getRight()->is_op())){
-        std::cout << "Both operators, shrink both children then shrink result" << std::endl;
+        std::cerr << "Both operators, shrink both children then shrink result" << std::endl;
         return (new MulOperator(this->getLeft()->shrink(), this->getRight()->shrink()))->shrink();
       }
       
       // If just the left is a function...
       else if (this->getLeft()->is_op()) {
-        std::cout << "Only left is an operator" << std::endl;
-        // if the right is a number, 
+        std::cerr << "Only left is an operator" << std::endl;
+        // if the right is a number
         if (this->getRight()->is_number()){
           v = this->getRight()->evaluate();
-          std::cout << "Right is " << v << std::endl;
+          std::cerr << "Right is " << v << std::endl;
           if(v==0){
             return new Number(0);
           }
           else if (v==1){
             return this->getLeft()->shrink();
           }
-          else {
-            
-            return (new MulOperator(this->getLeft()->shrink(), this->getRight()))->shrink();
-          }
         }
+        std::cerr << "Shrink left" << std::endl;
+        return (new MulOperator(this->getLeft()->shrink(), this->getRight()))->shrink();
       }
       // if the right is a function
       else if (this->getRight()->is_op()) {
         // if the right is a number, 
-        std::cout << "Only right is an operator" << std::endl;
+        std::cerr << "Only right is an operator" << std::endl;
         if (this->getLeft()->is_number()){
           v = this->getLeft()->evaluate();
-          std::cout << "Left is " << v << std::endl;
+          std::cerr << "Left is " << v << std::endl;
           if(v==0){
             return new Number(0);
           }
           else if (v==1){
             return this->getRight()->shrink();
           }
-          else {
-            return (new MulOperator(this->getLeft(), this->getRight()->shrink()))->shrink();
-          }
         }
+        return (new MulOperator(this->getLeft(), this->getRight()->shrink()))->shrink();
       }
       // Else they are both variables/numbers
       else {
-        std::cout << "Both left and right are not operators" << std::endl;
+        std::cerr << "Both left and right are not operators" << std::endl;
         if (this->getLeft()->is_number() && this->getRight()->is_number()) {
-          std::cout << "Left and right are numbers" << std::endl;
+          std::cerr << "Left and right are numbers" << std::endl;
           return new Number((this->getLeft()->evaluate())*(this->getRight()->evaluate()));
         }
         else if (this->getLeft()->is_number()){
           
           v = this->getLeft()->evaluate();
-          std::cout << "Left is " <<  v <<std::endl;
+          std::cerr << "Left is " <<  v <<std::endl;
           if(v==0){
             return new Number(0);
           }
@@ -294,13 +290,13 @@ public:
             return this->getRight();
           }
           else {
-              std::cout << "No changes" << std::endl;
+              std::cerr << "No changes" << std::endl;
               return new MulOperator(this->getLeft(), this->getRight());
            }
         }
         else if (this->getRight()->is_number()){
           v = this->getRight()->evaluate();
-          std::cout << "Right is " <<  v <<std::endl;
+          std::cerr << "Right is " <<  v <<std::endl;
           if (v==0){
             return new Number(0);
           }
@@ -308,17 +304,17 @@ public:
             return this->getLeft();
           }
           else {
-            std::cout << "No changes" << std::endl;
+            std::cerr << "No changes" << std::endl;
             return new MulOperator(this->getLeft(), this->getRight());
           }
         }
         // Both nvariables
         else {
-          std::cout << "No changes" << std::endl;
+          std::cerr << "No changes" << std::endl;
           return new MulOperator(this->getLeft(), this->getRight());
         }
       }
-      std::cout << "No changes" << std::endl;
+      std::cerr << "No changes" << std::endl;
       return new MulOperator(this->getLeft(), this->getRight());
     }
 };
