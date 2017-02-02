@@ -12,17 +12,17 @@ int main(int argc, char *argv[])
       variables.push_back(var);
     }
     
-    const Expression *ast=parseAST();
+    const Expression *diff1=parseAST();
     
-    const Expression *diff1;
-    diff1 = ast->differentiate(variables[0]);
-    for (int i = 1; i < variables.size(); ++i){
+    for (int i = 0; i < variables.size(); ++i){
       diff1 = diff1->differentiate(variables[i]);
       
     }
-    const Expression *shrunk = diff1->shrink();
+    diff1->print();
+    diff1 = diff1->shrink();
     
-    shrunk->print();
+    
+    diff1->print();
     fprintf(stdout, "\n");
     return 0;
 }

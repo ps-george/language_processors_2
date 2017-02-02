@@ -16,7 +16,7 @@ public:
     Number(double _value)
         : value(_value)
     {}
-
+    
     double getValue() const
     { return value; }
 
@@ -45,8 +45,17 @@ public:
     
     virtual const Expression *shrink(
     ) const {
+      // Shouldn't be called
       return this;
     };
+    
+    virtual bool is_number() const override{
+      return true;
+    }
+    
+    virtual bool is_op() const override{
+      return false;
+    }
 };
 
 class Variable
@@ -76,6 +85,7 @@ public:
     
     virtual double evaluate() const override
     {
+      // shouldn't be called
       return 1;
     }
     
@@ -90,8 +100,17 @@ public:
     }    
     virtual const Expression *shrink(
     ) const {
+      // shouldn't be called
       return this;
     };
+    
+    virtual bool is_variable() const override{
+      return true;
+    }
+    
+    virtual bool is_op() const override{
+      return false;
+    }
 };
 
 

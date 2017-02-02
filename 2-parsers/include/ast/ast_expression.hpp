@@ -28,6 +28,21 @@ public:
     //! Return a new tree without all the zeros
     virtual const Expression *shrink(
     ) const =0;
+    
+    virtual bool is_number() const{
+      return false;
+    }
+    
+    virtual bool is_variable() const{
+      return false;
+    }
+    
+    virtual bool is_op() const{
+      if ((!(this->is_number())) && (!(this->is_variable()))){
+        return true;
+      }
+      return false;
+    }
 };
 
 

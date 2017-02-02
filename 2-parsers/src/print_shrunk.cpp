@@ -8,6 +8,7 @@ int main()
     ast->print();
     std::cout<<std::endl;
     
+    diff = diff->shrink();
     diff->print();
     std::cout<<std::endl;
     return 0;

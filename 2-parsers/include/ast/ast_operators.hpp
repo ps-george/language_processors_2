@@ -6,6 +6,7 @@
 
 #include <string>
 #include <iostream>
+#include <cmath>
 
 class Operator
     : public Expression
@@ -44,6 +45,10 @@ public:
         right->print();
         std::cout<<" )";
     }
+    
+    virtual bool is_op() const override{
+      return true;
+    }
 };
 
 class AddOperator
@@ -61,12 +66,12 @@ public:
         const std::map<std::string,double> &bindings
     ) const override
     {
-      return getLeft()->evaluate(bindings) + getRight()->evaluate(bindings);
+      return this->getLeft()->evaluate(bindings) + this->getRight()->evaluate(bindings);
     }
     
     virtual double evaluate() const override
     {
-      return getLeft()->evaluate() + getRight()->evaluate();
+      return this->getLeft()->evaluate() + this->getRight()->evaluate();
     }
 
     virtual const Expression *differentiate(
@@ -79,16 +84,59 @@ public:
     virtual const Expression *shrink(
     ) const 
     {
-      if ((this->getLeft()->evaluate() == 0)&&(this->getRight()->evaluate() == 0)){
-        return new Number(0);
+      // If both sides are operators, shrink both sides, then shrink the result
+      if (this->getLeft()->is_op() && this->getRight()->is_op()){
+        return (new AddOperator(this->getLeft()->shrink(), this->getRight()->shrink()))->shrink();
       }
-      else if (this->getLeft()->evaluate() == 0){
-        return this->getRight();
+      
+      
+      // If just the left is a function...
+      else if (this->getLeft()->is_op()) {
+        // if the right is a number, 
+        if (this->getRight()->is_number()){
+          if(this->getRight()->evaluate()==0){
+            return this->getLeft();
+          }
+          else { return (new AddOperator(this->getLeft()->shrink(), this->getRight()))->shrink();
+          }
+        }
       }
-      else if (this->getRight()->evaluate() == 0){
-        return this->getLeft();
+      // if the right is a function
+      else if (this->getRight()->is_op()) {
+        // if the right is a number, 
+        if (this->getLeft()->is_number()){
+          if(this->getLeft()->evaluate()==0){
+            return this->getRight();
+          } else {
+            return (new AddOperator(this->getLeft(), this->getRight()->shrink()))->shrink();
+          }
+        }
       }
-      return this;
+      // both numbers/variables
+      else {
+        if (this->getLeft()->is_number() && this->getRight()->is_number()) {
+          return new Number(this->getLeft()->evaluate() + getRight()->evaluate());
+        }
+        else if (this->getLeft()->is_number()){
+          if (this->getLeft()->evaluate()==0){
+           return this->getRight();
+          } else {
+          return new AddOperator(this->getLeft(), this->getRight());
+          }
+        }
+        else if (this->getRight()->is_number()){
+          if(this->getRight()->evaluate()==0){
+            return this->getLeft();
+          } else {
+          return new AddOperator(this->getLeft(), this->getRight());
+          }
+        }
+        // Both nvariables
+        else {
+          return new AddOperator(this->getLeft(), this->getRight());
+        }
+      }
+      return new AddOperator(this->getLeft(), this->getRight());
     }
 };
 
@@ -124,9 +172,6 @@ public:
     virtual const Expression *shrink(
     ) const 
     {
-      if (this->evaluate() == 0){
-        return new Number(0);
-      }
       return this;
     }
 };
@@ -169,10 +214,94 @@ public:
     virtual const Expression *shrink(
     ) const 
     {
-      if ((this->getLeft()->evaluate() == 0) || (this->getRight()->evaluate() == 0)){
-        return new Number(0);
+      int v = 0;
+      // If both sides are functions/operators, shrink them
+      if ((this->getLeft()->is_op()) && (this->getRight()->is_op())){
+        std::cout << "Both operators, shrink both children then shrink result" << std::endl;
+        return (new MulOperator(this->getLeft()->shrink(), this->getRight()->shrink()))->shrink();
       }
-      return this;
+      
+      // If just the left is a function...
+      else if (this->getLeft()->is_op()) {
+        std::cout << "Only left is an operator" << std::endl;
+        // if the right is a number, 
+        if (this->getRight()->is_number()){
+          v = this->getRight()->evaluate();
+          std::cout << "Right is " << v << std::endl;
+          if(v==0){
+            return new Number(0);
+          }
+          else if (v==1){
+            return this->getLeft()->shrink();
+          }
+          else {
+            
+            return (new MulOperator(this->getLeft()->shrink(), this->getRight()))->shrink();
+          }
+        }
+      }
+      // if the right is a function
+      else if (this->getRight()->is_op()) {
+        // if the right is a number, 
+        std::cout << "Only right is an operator" << std::endl;
+        if (this->getLeft()->is_number()){
+          v = this->getLeft()->evaluate();
+          std::cout << "Left is " << v << std::endl;
+          if(v==0){
+            return new Number(0);
+          }
+          else if (v==1){
+            return this->getRight()->shrink();
+          }
+          else {
+            return (new MulOperator(this->getLeft(), this->getRight()->shrink()))->shrink();
+          }
+        }
+      }
+      // Else they are both variables/numbers
+      else {
+        std::cout << "Both left and right are not operators" << std::endl;
+        if (this->getLeft()->is_number() && this->getRight()->is_number()) {
+          std::cout << "Left and right are numbers" << std::endl;
+          return new Number((this->getLeft()->evaluate())*(this->getRight()->evaluate()));
+        }
+        else if (this->getLeft()->is_number()){
+          
+          v = this->getLeft()->evaluate();
+          std::cout << "Left is " <<  v <<std::endl;
+          if(v==0){
+            return new Number(0);
+          }
+          else if (v==1) {
+            return this->getRight();
+          }
+          else {
+              std::cout << "No changes" << std::endl;
+              return new MulOperator(this->getLeft(), this->getRight());
+           }
+        }
+        else if (this->getRight()->is_number()){
+          v = this->getRight()->evaluate();
+          std::cout << "Right is " <<  v <<std::endl;
+          if (v==0){
+            return new Number(0);
+          }
+          else if (v==1) {
+            return this->getLeft();
+          }
+          else {
+            std::cout << "No changes" << std::endl;
+            return new MulOperator(this->getLeft(), this->getRight());
+          }
+        }
+        // Both nvariables
+        else {
+          std::cout << "No changes" << std::endl;
+          return new MulOperator(this->getLeft(), this->getRight());
+        }
+      }
+      std::cout << "No changes" << std::endl;
+      return new MulOperator(this->getLeft(), this->getRight());
     }
 };
 
