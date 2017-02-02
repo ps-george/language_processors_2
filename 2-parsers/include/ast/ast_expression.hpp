@@ -33,16 +33,12 @@ public:
         tabcount = tabcount - 1;
       }
       //std::cout << tabcount;
-      for (int i = 0; i < tabcount; i++){
-        std::cout << '\t';
-      }
+      std::cout << std::string(tabcount,'\t');
+      
     }
     
     void tab() const {
-      //std::cout << "n" << tabcount;
-      for (int i = 0; i < tabcount; i++){
-        std::cout << '\t';
-      }
+      std::cout << std::string(tabcount,'\t');
     }
 };
 
