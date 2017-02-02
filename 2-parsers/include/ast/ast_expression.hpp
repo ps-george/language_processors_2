@@ -7,12 +7,14 @@
 
 class Expression
 {
+private:
+  static int tabcount;
 public:
     virtual ~Expression()
     {}
 
     virtual void print() const =0;
-
+    virtual void print_xml() const =0;
     //! Evaluate the tree using the given mapping of variables to numbers
     virtual double evaluate(
         const std::map<std::string,double> &bindings
@@ -42,6 +44,22 @@ public:
         return true;
       }
       return false;
+    }
+    
+    static void tab(bool open) {
+      if (open){
+        tabcount = tabcount + 1;
+      }
+      else {
+        tabcount = tabcount - 1;
+      }
+      //std::cout << tabcount;
+      std::cout << std::string(tabcount,'\t');
+      
+    }
+    
+    void tab() const {
+      std::cout << std::string(tabcount,'\t');
     }
 };
 

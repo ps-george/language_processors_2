@@ -41,9 +41,9 @@ TERM : TERM T_TIMES FACTOR  { $$ = new MulOperator($1,$3); }
      | FACTOR               { $$ = $1; }
 
 FACTOR : T_LBRACKET EXPR T_RBRACKET { $$ = $2; }
-       | T_LOG T_LBRACKET TERM T_RBRACKET { $$ = new LogFunction($3); }
-       | T_EXP T_LBRACKET TERM T_RBRACKET { $$ = new ExpFunction($3); }
-       | T_SQRT T_LBRACKET TERM T_RBRACKET { $$ = new SqrtFunction($3); }
+       | T_LOG T_LBRACKET EXPR T_RBRACKET { $$ = new LogFunction($3); }
+       | T_EXP T_LBRACKET EXPR T_RBRACKET { $$ = new ExpFunction($3); }
+       | T_SQRT T_LBRACKET EXPR T_RBRACKET { $$ = new SqrtFunction($3); }
        | T_VARIABLE                 { $$ = new Variable( *$1 ); }
        | T_NUMBER                   { $$ = new Number( $1 ); }
 

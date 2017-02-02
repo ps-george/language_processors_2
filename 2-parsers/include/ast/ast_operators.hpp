@@ -49,6 +49,24 @@ public:
     virtual bool is_op() const override{
       return true;
     }
+    virtual void print_xml() const override
+    {
+        std::cout<<"<Operator id =\""<<getOpcode()<<"\">\n";
+        this->tab(true);
+        std::cout<<"<Left pid =\""<<getOpcode()<<"\">\n";
+          this->tab(true);
+          left->print_xml();
+          this->tab(false);
+        std::cout<<"</Left>\n";
+        this->tab();
+        std::cout<<"<Right pid =\""<<getOpcode()<<"\">\n";
+          this->tab(true);
+          right->print_xml();
+          this->tab(false);
+        std::cout<<"</Right>\n";
+        this->tab(false);
+        std::cout<<"</Operator>\n";
+    }
 };
 
 class AddOperator

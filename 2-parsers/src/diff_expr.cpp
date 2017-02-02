@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <vector>
 
+int Expression::tabcount = 0;
+
 int main(int argc, char *argv[])
 {
     std::vector<std::string> variables;
@@ -18,7 +20,7 @@ int main(int argc, char *argv[])
       diff1 = diff1->differentiate(variables[i]);
       
     }
-    diff1->print();
+    diff1->print_xml();
     diff1 = diff1->shrink();
     
     
