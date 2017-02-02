@@ -1,5 +1,7 @@
 #include "ast.hpp"
 
+int Expression::tabcount = 0;
+
 int main()
 {
     const Expression *ast=parseAST();

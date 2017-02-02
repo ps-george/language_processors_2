@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <vector>
 
+int Expression::tabcount = 0;
+
 int main(int argc, char *argv[])
 {
     std::vector<std::string> variables;

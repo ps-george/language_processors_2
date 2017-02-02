@@ -2,6 +2,8 @@
 
 #include <iomanip>
 
+int Expression::tabcount = 0;
+
 int main(int argc, char *argv[])
 {
     std::map<std::string,double> bindings;
