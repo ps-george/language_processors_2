@@ -33,6 +33,13 @@ public:
         arg->print();
         std::cout<<" )";
     }
+    
+    virtual void print_xml() const override
+    {
+        std::cout<<getFunction()<<"( ";
+        arg->print_xml();
+        std::cout<<" )";
+    }
 };
 
 class LogFunction

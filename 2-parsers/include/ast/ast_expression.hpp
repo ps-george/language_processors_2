@@ -12,7 +12,7 @@ public:
     {}
 
     virtual void print() const =0;
-
+    virtual void print_xml() const =0;
     //! Evaluate the tree using the given mapping of variables to numbers
     virtual double evaluate(
         const std::map<std::string,double> &bindings
