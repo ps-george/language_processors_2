@@ -17,11 +17,7 @@ public:
     virtual void print() const =0;
     virtual void print_xml() const =0;
     //! Evaluate the tree using the given mapping of variables to numbers
-    virtual double evaluate(
-        const std::map<std::string,double> &bindings
-    ) const =0;
-    
-    virtual double evaluate() const =0;
+    virtual double evaluate( const std::map<std::string,double> &bindings=std::map<std::string,double>()) const =0;
 
     //! Return a new tree which is the derivative w.r.t. given variable
     virtual const Expression *differentiate(

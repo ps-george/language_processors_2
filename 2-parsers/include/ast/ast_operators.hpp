@@ -87,11 +87,6 @@ public:
     {
       return this->getLeft()->evaluate(bindings) + this->getRight()->evaluate(bindings);
     }
-    
-    virtual double evaluate() const override
-    {
-      return this->getLeft()->evaluate() + this->getRight()->evaluate();
-    }
 
     virtual const Expression *differentiate(
         const std::string &variable
@@ -179,11 +174,6 @@ public:
       return this->getLeft()->evaluate(bindings) - this->getRight()->evaluate(bindings);
     }
     
-    virtual double evaluate() const override
-    {
-      return this->getLeft()->evaluate() - this->getRight()->evaluate();
-    }
-    
     virtual const Expression *differentiate(
         const std::string &variable
     ) const override
@@ -252,18 +242,10 @@ public:
     MulOperator(const Expression *_left, const Expression *_right)
         : Operator(_left, _right)
     {}
-    virtual double evaluate(
-        const std::map<std::string,double> &bindings
-    ) const override
-    {
+    virtual double evaluate(const std::map<std::string,double> &bindings) const override {
       return this->getLeft()->evaluate(bindings) * this->getRight()->evaluate(bindings);
     }
-    virtual double evaluate() const override
-    {
-      if ((this->getLeft()->evaluate()==0)||(this->getRight()->evaluate()==0))
-        return 0;
-      return 1;
-    }
+    
     virtual const Expression *differentiate(
         const std::string &variable
     ) const override
@@ -391,12 +373,7 @@ public:
     ) const override
     {
       return this->getLeft()->evaluate(bindings) / this->getRight()->evaluate(bindings);
-    }   
-    
-    virtual double evaluate() const override
-    {
-      return this->getLeft()->evaluate() / this->getRight()->evaluate();
-    }  
+    }
      
     virtual const Expression *differentiate(
         const std::string &variable

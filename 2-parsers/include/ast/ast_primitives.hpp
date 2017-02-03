@@ -37,11 +37,6 @@ public:
       return this->getValue();
     }
     
-    virtual double evaluate() const override
-    {
-      return this->getValue();
-    }
-    
     virtual const Expression *differentiate(
         const std::string &variable
     ) const
@@ -86,17 +81,12 @@ public:
         std::cout<<"<Variable id=\""<< id << "\"/>\n";
     }
     
-    virtual double evaluate(
-        const std::map<std::string,double> &bindings
-    ) const override
-    {
-      return bindings.find(this->getId())->second;
+    bool bound(const std::map<std::string,double> &bindings){
+      return bindings.count(this->getId());
     }
     
-    virtual double evaluate() const override
-    {
-      // shouldn't be called
-      return 1;
+    virtual double evaluate(const std::map<std::string,double> &bindings) const override {
+      return bindings.find(this->getId())->second;
     }
     
     virtual const Expression *differentiate(

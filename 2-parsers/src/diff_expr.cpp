@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     
     const Expression *diff1=parseAST();
     
-    for (int i = 0; i < variables.size(); ++i){
+    for (unsigned i = 0; i < variables.size(); ++i){
       diff1 = diff1->differentiate(variables[i]);
       
     }

@@ -65,12 +65,7 @@ public:
     {
       return log(this->getArg()->evaluate(bindings));
     }
-    
-    virtual double evaluate() const override
-    {
-      return log(this->getArg()->evaluate());
-    }
-    
+  
     virtual const Expression *differentiate(
         const std::string &variable
     ) const override
@@ -108,11 +103,6 @@ public:
     ) const override
     {
       return exp(this->getArg()->evaluate(bindings));
-    }
-    
-    virtual double evaluate() const override
-    {
-      return exp(this->getArg()->evaluate());
     }
     
     virtual const Expression *differentiate(
@@ -154,10 +144,6 @@ public:
       return sqrt(this->getArg()->evaluate(bindings));
     }
     
-    virtual double evaluate() const override
-    {
-      return sqrt(this->getArg()->evaluate());
-    }
     virtual const Expression *differentiate(
         const std::string &variable
     ) const override
