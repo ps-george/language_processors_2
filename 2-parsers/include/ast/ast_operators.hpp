@@ -49,6 +49,7 @@ public:
     virtual bool is_opf() const override{
       return true;
     }
+    
     virtual void print_xml() const override
     {
         std::cout<<"<Operator id =\""<<getOpcode()<<"\">\n";
@@ -99,12 +100,12 @@ public:
         return new AddOperator(this->getLeft()->differentiate(variable),this->getRight()->differentiate(variable));
     }
     
-    virtual const Expression *shrink(
-    ) const 
+    virtual const Expression *shrink() const 
     {
+      // std::cerr << "Shrink add" << std::endl;
       // If both sides are operators, shrink both sides, then shrink the result
       if (this->getLeft()->is_opf() && this->getRight()->is_opf()){
-        return (new AddOperator(this->getLeft()->shrink(), this->getRight()->shrink()))->shrink();
+        return new AddOperator(this->getLeft()->shrink(), this->getRight()->shrink());
       }
       
       // If just the left is a function...
@@ -112,10 +113,11 @@ public:
         // if the right is a number, 
         if (this->getRight()->is_number()){
           if(this->getRight()->evaluate()==0){
+            change();
             return this->getLeft();
           }
         }
-        return (new AddOperator(this->getLeft()->shrink(), this->getRight()))->shrink();
+        return new AddOperator(this->getLeft()->shrink(), this->getRight());
         }
       
       // if the right is a function
@@ -123,35 +125,40 @@ public:
         // if the right is a number, 
         if (this->getLeft()->is_number()){
           if(this->getLeft()->evaluate()==0){
+            change();
             return this->getRight();
           }
         }
-        return (new AddOperator(this->getLeft(), this->getRight()->shrink()))->shrink();
+        return new AddOperator(this->getLeft(), this->getRight()->shrink());
       }
       // both numbers/variables
       else {
         if (this->getLeft()->is_number() && this->getRight()->is_number()) {
+          change();
           return new Number(this->getLeft()->evaluate() + getRight()->evaluate());
         }
         // Just left is a number
         else if (this->getLeft()->is_number()){
           if (this->getLeft()->evaluate()==0){
-           return this->getRight();
+            change();
+            return this->getRight();
           }
-          return new AddOperator(this->getLeft(), this->getRight());
+          return this;
         }
         else if (this->getRight()->is_number()){
           if(this->getRight()->evaluate()==0){
+            change();
             return this->getLeft();
           } else {
-          return new AddOperator(this->getLeft(), this->getRight());
+          return this;
           }
         }
         // Both nvariables
         else {
-          return new AddOperator(this->getLeft(), this->getRight());
+          return this;
         }
       }
+      return this;
     }
 };
 
@@ -184,12 +191,12 @@ public:
         return new SubOperator(this->getLeft()->differentiate(variable),this->getRight()->differentiate(variable));
     }
     
-    virtual const Expression *shrink(
-    ) const 
+    virtual const Expression *shrink() const 
     {
+      // std::cerr << "Shrink sub" << std::endl;
       // If both sides are operators, shrink both sides, then shrink the result
       if (this->getLeft()->is_opf() && this->getRight()->is_opf()){
-        return (new SubOperator(this->getLeft()->shrink(), this->getRight()->shrink()))->shrink();
+        return new SubOperator(this->getLeft()->shrink(), this->getRight()->shrink());
       }
       
       // If just the left is a function...
@@ -197,37 +204,41 @@ public:
         // if the right is a number, 
         if (this->getRight()->is_number()){
           if(this->getRight()->evaluate()==0){
+            change();
             return this->getLeft();
           }
         }
-        return (new SubOperator(this->getLeft()->shrink(), this->getRight()))->shrink();
+        return new SubOperator(this->getLeft()->shrink(), this->getRight());
         }
       
       // if the right is a function
       else if (this->getRight()->is_opf()) {
-        return (new SubOperator(this->getLeft(), this->getRight()->shrink()))->shrink();
+        return new SubOperator(this->getLeft(), this->getRight()->shrink());
       }
       // both numbers/variables
       else {
         if (this->getLeft()->is_number() && this->getRight()->is_number()) {
+          change();
           return new Number(this->getLeft()->evaluate() - getRight()->evaluate());
         }
         // Just left is a number
         else if (this->getLeft()->is_number()){
-          return new SubOperator(this->getLeft(), this->getRight());
+          return this;
         }
         else if (this->getRight()->is_number()){
           if(this->getRight()->evaluate()==0){
+            change();
             return this->getLeft();
           } else {
-          return new SubOperator(this->getLeft(), this->getRight());
+          return this;
           }
         }
         // Both nvariables
         else {
-          return new SubOperator(this->getLeft(), this->getRight());
+          return this;
         }
       }
+      return this;
     }
 };
 
@@ -266,14 +277,14 @@ public:
             this->getRight()->differentiate(variable)));
     }
     
-    virtual const Expression *shrink(
-    ) const 
+    virtual const Expression *shrink() const 
     {
+      // std::cerr << "Shrink mul" << std::endl;
       int v = 0;
       // If both sides are functions/operators, shrink them
       if ((this->getLeft()->is_opf()) && (this->getRight()->is_opf())){
         // std::cerr << "Both operators, shrink both children then shrink result" << std::endl;
-        return (new MulOperator(this->getLeft()->shrink(), this->getRight()->shrink()))->shrink();
+        return new MulOperator(this->getLeft()->shrink(), this->getRight()->shrink());
       }
       
       // If just the left is a function...
@@ -284,14 +295,16 @@ public:
           v = this->getRight()->evaluate();
           // std::cerr << "Right is " << v << std::endl;
           if(v==0){
+            change();
             return new Number(0);
           }
           else if (v==1){
+            change();
             return this->getLeft()->shrink();
           }
         }
         // std::cerr << "Shrink left" << std::endl;
-        return (new MulOperator(this->getLeft()->shrink(), this->getRight()))->shrink();
+        return new MulOperator(this->getLeft()->shrink(), this->getRight());
       }
       // if the right is a function
       else if (this->getRight()->is_opf()) {
@@ -300,19 +313,22 @@ public:
           v = this->getLeft()->evaluate();
           // std::cerr << "Left is " << v << std::endl;
           if(v==0){
+            change();
             return new Number(0);
           }
           else if (v==1){
+            change();
             return this->getRight()->shrink();
           }
         }
-        return (new MulOperator(this->getLeft(), this->getRight()->shrink()))->shrink();
+        return new MulOperator(this->getLeft(), this->getRight()->shrink());
       }
       // Else they are both variables/numbers
       else {
         // std::cerr << "Both left and right are not operators" << std::endl;
         if (this->getLeft()->is_number() && this->getRight()->is_number()) {
           // std::cerr << "Left and right are numbers" << std::endl;
+          change();
           return new Number((this->getLeft()->evaluate())*(this->getRight()->evaluate()));
         }
         else if (this->getLeft()->is_number()){
@@ -320,38 +336,42 @@ public:
           v = this->getLeft()->evaluate();
           // std::cerr << "Left is " <<  v <<std::endl;
           if(v==0){
+            change();
             return new Number(0);
           }
           else if (v==1) {
+            change();
             return this->getRight();
           }
           else {
               // std::cerr << "No changes" << std::endl;
-              return new MulOperator(this->getLeft(), this->getRight());
+              return this;
            }
         }
         else if (this->getRight()->is_number()){
           v = this->getRight()->evaluate();
           // std::cerr << "Right is " <<  v <<std::endl;
           if (v==0){
+            change();
             return new Number(0);
           }
           else if (v==1) {
+            change();
             return this->getLeft();
           }
           else {
             // std::cerr << "No changes" << std::endl;
-            return new MulOperator(this->getLeft(), this->getRight());
+            return this;
           }
         }
         // Both nvariables
         else {
           // std::cerr << "No changes" << std::endl;
-          return new MulOperator(this->getLeft(), this->getRight());
+          return this;
         }
       }
       // std::cerr << "No changes" << std::endl;
-      return new MulOperator(this->getLeft(), this->getRight());
+      return this;
     }
 };
 
@@ -399,13 +419,13 @@ public:
         ;
     }
     
-    virtual const Expression *shrink(
-    ) const 
+    virtual const Expression *shrink() const 
     {
       int v = 0;
+      // std::cerr << "Shrink Div" << std::endl;
       // If both sides are operators, shrink both sides, then shrink the result
       if (this->getLeft()->is_opf() && this->getRight()->is_opf()){
-        return (new DivOperator(this->getLeft()->shrink(), this->getRight()->shrink()))->shrink();
+        return new DivOperator(this->getLeft()->shrink(), this->getRight()->shrink());
       }
       
       // If just the left is a function...
@@ -413,10 +433,11 @@ public:
         // if the right is a number, 
         if (this->getRight()->is_number()){
           if(this->getRight()->evaluate()==1){
+            change();
             return this->getLeft();
           }
         }
-        return (new DivOperator(this->getLeft()->shrink(), this->getRight()))->shrink();
+        return new DivOperator(this->getLeft()->shrink(), this->getRight());
         }
       
       // if the right is a function
@@ -424,10 +445,11 @@ public:
         if (this->getLeft()->is_number()){
           v = this->getLeft()->evaluate();
           if(v==0){
+            change();
             return new Number(0);
           }
         }
-        return (new DivOperator(this->getLeft(), this->getRight()->shrink()))->shrink();
+        return new DivOperator(this->getLeft(), this->getRight()->shrink());
       }
       // both numbers/variables
       else {
@@ -437,20 +459,22 @@ public:
         // Just left is a number
         else if (this->getLeft()->is_number()){
           if(this->getLeft()->evaluate()==0){
+            change();
             return new Number(0);
           }
-          return new DivOperator(this->getLeft(), this->getRight());
+          return this;
         }
         else if (this->getRight()->is_number()){
           if(this->getRight()->evaluate()==1){
+            change();
             return this->getLeft();
           } else {
-          return new DivOperator(this->getLeft(), this->getRight());
+          return this;
           }
         }
         // Both nvariables
         else {
-          return new DivOperator(this->getLeft(), this->getRight());
+          return this;
         }
       }
     } 

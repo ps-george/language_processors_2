@@ -80,10 +80,11 @@ public:
     
     virtual const Expression *shrink() const {
       if (this->getArg()->is_opf()){
-        return (new LogFunction(this->getArg()->shrink()))->shrink();
+        return new LogFunction(this->getArg()->shrink());
       }
       else if (this->getArg()->is_number()){
         if (this->getArg()->evaluate()==1){
+          change();
           return new Number(0);
         }
       }
@@ -123,10 +124,11 @@ public:
     
     virtual const Expression *shrink() const {
       if (this->getArg()->is_opf()){
-        return (new ExpFunction(this->getArg()->shrink()))->shrink();
+        return new ExpFunction(this->getArg()->shrink());
       }
       else if (this->getArg()->is_number()){
         if (this->getArg()->evaluate()==0){
+          change();
           return new Number(1);
         }
       }
@@ -166,13 +168,14 @@ public:
     virtual const Expression *shrink() const {
       int v = 0;
       if (this->getArg()->is_opf()){
-        return (new SqrtFunction(this->getArg()->shrink()))->shrink();
+        return new SqrtFunction(this->getArg()->shrink());
       }
       else if (this->getArg()->is_number()){
         v = this->getArg()->evaluate();
         // If sqrt is a whole number
         int s = sqrt(v);
         if ((s*s) == v) {
+          change();
           return new Number(sqrt(v));
         }
       }

@@ -9,6 +9,7 @@ class Expression
 {
 private:
   static int tabcount;
+  static int changed;
 public:
     virtual ~Expression()
     {}
@@ -28,8 +29,7 @@ public:
     ) const =0;
     
     //! Return a new tree without all the zeros
-    virtual const Expression *shrink(
-    ) const =0;
+    virtual const Expression *shrink() const =0;
     
     virtual bool is_number() const{
       return false;
@@ -56,6 +56,18 @@ public:
       //std::cout << tabcount;
       std::cout << std::string(tabcount,'\t');
       
+    }
+    
+    static void change() {
+      changed++;
+    }
+    
+    static void reset_changed() {
+      changed = 0;
+    }
+    
+    static int has_changed() {
+      return changed;
     }
     
     void tab() const {
