@@ -21,21 +21,18 @@ int main(int argc, char *argv[])
       diff1 = diff1->differentiate(variables[i]);
       
     }
-    diff1->print();
-    fprintf(stdout, "\n");
+    //diff1->print();
+    //fprintf(stdout, "\n"); // or fflush()
     
-    fprintf(stderr, "\n\n");
     int c = 1;
     while (c){
       c = 0;
       Expression::reset_changed();
       diff1 = diff1->shrink();
       c = diff1->has_changed();
-      fprintf(stderr, "%d changes\n", c);
+      fprintf(stderr, "Changes: %d\n", c);
     }
-    fprintf(stdout, "\n");
-    
     diff1->print();
-    
+    fprintf(stdout, "\n");
     return 0;
 }
