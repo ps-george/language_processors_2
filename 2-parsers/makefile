@@ -7,6 +7,8 @@ src/maths_parser.tab.cpp src/maths_parser.tab.hpp : src/maths_parser.y
 src/maths_lexer.yy.cpp : src/maths_lexer.flex src/maths_parser.tab.hpp
 	flex -o src/maths_lexer.yy.cpp  src/maths_lexer.flex
 
+all :	bin/print_canonical bin/print_xml bin/print_shrunk bin/eval_expr bin/diff_expr
+
 bin/print_canonical : src/print_canonical.o src/maths_parser.tab.o src/maths_lexer.yy.o src/maths_parser.tab.o
 	mkdir -p bin
 	g++ $(CPPFLAGS) -o bin/print_canonical $^
