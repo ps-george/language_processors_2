@@ -3,6 +3,7 @@
 #include <iomanip>
 
 int Expression::tabcount = 0;
+int Expression::changed = 0;
 
 int main(int argc, char *argv[])
 {

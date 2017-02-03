@@ -1,6 +1,7 @@
 #include "ast.hpp"
 
 int Expression::tabcount = 0;
+int Expression::changed = 0;
 
 int main()
 {

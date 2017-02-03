@@ -32,7 +32,9 @@ int main(int argc, char *argv[])
       c = diff1->has_changed();
       fprintf(stderr, "Changes: %d\n", c);
     }
+    
     diff1->print();
+    
     fprintf(stdout, "\n");
     return 0;
 }
