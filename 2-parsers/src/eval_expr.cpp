@@ -27,6 +27,6 @@ int main(int argc, char *argv[])
     
     double res=ast->evaluate(bindings);
     // TODO : print out with 6 decimal digits of precision
-    fprintf(stdout, "%f\n", res);
+    fprintf(stdout, "%6f\n", res);
     return 0;
 }
