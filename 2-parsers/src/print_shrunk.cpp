@@ -5,10 +5,10 @@ int Expression::changed = 0;
 int main()
 {
     const Expression *ast=parseAST();
-    ast->print_xml();
     
     int c = 1;
     while (c){
+      ast->print_xml();
       c = 0;
       Expression::reset_changed();
       ast = ast->shrink();

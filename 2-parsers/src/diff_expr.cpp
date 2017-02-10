@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     }
     //diff->print();
     //fprintf(stdout, "\n"); // or fflush()
-    
+    /*
     int c = 1;
     while (c){
       c = 0;
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
       c = diff->has_changed();
       fprintf(stderr, "Changes: %d\n", c);
     }
-    
+    */
     diff->print();
     
     fprintf(stdout, "\n");

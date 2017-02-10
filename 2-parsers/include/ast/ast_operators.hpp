@@ -119,7 +119,7 @@ public:
       else if (this->getRight()->is_opf()) {
         // if the right is a number, 
         if (this->getLeft()->is_number()){
-          if(this->getLeft()->evaluate()==0){
+          if(this->getLeft()->evaluate()==0.0){
             change();
             return this->getRight();
           }
@@ -134,14 +134,14 @@ public:
         }
         // Just left is a number
         else if (this->getLeft()->is_number()){
-          if (this->getLeft()->evaluate()==0){
+          if (this->getLeft()->evaluate()==0.0){
             change();
             return this->getRight();
           }
           return this;
         }
         else if (this->getRight()->is_number()){
-          if(this->getRight()->evaluate()==0){
+          if(this->getRight()->evaluate()==0.0){
             change();
             return this->getLeft();
           } else {
@@ -193,7 +193,7 @@ public:
       else if (this->getLeft()->is_opf()) {
         // if the right is a number, 
         if (this->getRight()->is_number()){
-          if(this->getRight()->evaluate()==0){
+          if(this->getRight()->evaluate()==0.0){
             change();
             return this->getLeft();
           }
@@ -216,7 +216,7 @@ public:
           return this;
         }
         else if (this->getRight()->is_number()){
-          if(this->getRight()->evaluate()==0){
+          if(this->getRight()->evaluate()==0.0){
             change();
             return this->getLeft();
           } else {
@@ -262,7 +262,7 @@ public:
     virtual const Expression *shrink() const 
     {
       // std::cerr << "Shrink mul" << std::endl;
-      int v = 0;
+      double v = 0.0;
       // If both sides are functions/operators, shrink them
       if ((this->getLeft()->is_opf()) && (this->getRight()->is_opf())){
         // std::cerr << "Both operators, shrink both children then shrink result" << std::endl;
@@ -276,11 +276,11 @@ public:
         if (this->getRight()->is_number()){
           v = this->getRight()->evaluate();
           // std::cerr << "Right is " << v << std::endl;
-          if(v==0){
+          if(v==0.0){
             change();
             return new Number(0);
           }
-          else if (v==1){
+          else if (v==1.0){
             change();
             return this->getLeft()->shrink();
           }
@@ -294,11 +294,11 @@ public:
         if (this->getLeft()->is_number()){
           v = this->getLeft()->evaluate();
           // std::cerr << "Left is " << v << std::endl;
-          if(v==0){
+          if(v==0.0){
             change();
             return new Number(0);
           }
-          else if (v==1){
+          else if (v==1.0){
             change();
             return this->getRight()->shrink();
           }
@@ -317,11 +317,11 @@ public:
           
           v = this->getLeft()->evaluate();
           // std::cerr << "Left is " <<  v <<std::endl;
-          if(v==0){
+          if(v==0.0){
             change();
             return new Number(0);
           }
-          else if (v==1) {
+          else if (v==1.0) {
             change();
             return this->getRight();
           }
@@ -333,11 +333,11 @@ public:
         else if (this->getRight()->is_number()){
           v = this->getRight()->evaluate();
           // std::cerr << "Right is " <<  v <<std::endl;
-          if (v==0){
+          if (v==0.0){
             change();
             return new Number(0);
           }
-          else if (v==1) {
+          else if (v==1.0) {
             change();
             return this->getLeft();
           }
@@ -398,7 +398,7 @@ public:
     
     virtual const Expression *shrink() const 
     {
-      int v = 0;
+      double v = 0.0;
       // std::cerr << "Shrink Div" << std::endl;
       // If both sides are operators, shrink both sides, then shrink the result
       if (this->getLeft()->is_opf() && this->getRight()->is_opf()){
@@ -409,7 +409,7 @@ public:
       else if (this->getLeft()->is_opf()) {
         // if the right is a number, 
         if (this->getRight()->is_number()){
-          if(this->getRight()->evaluate()==1){
+          if(this->getRight()->evaluate()==1.0){
             change();
             return this->getLeft();
           }
@@ -421,7 +421,7 @@ public:
       else if (this->getRight()->is_opf()) {
         if (this->getLeft()->is_number()){
           v = this->getLeft()->evaluate();
-          if(v==0){
+          if(v==0.0){
             change();
             return new Number(0);
           }
@@ -435,14 +435,14 @@ public:
         }
         // Just left is a number
         else if (this->getLeft()->is_number()){
-          if(this->getLeft()->evaluate()==0){
+          if(this->getLeft()->evaluate()==0.0){
             change();
             return new Number(0);
           }
           return this;
         }
         else if (this->getRight()->is_number()){
-          if(this->getRight()->evaluate()==1){
+          if(this->getRight()->evaluate()==1.0){
             change();
             return this->getLeft();
           } else {
