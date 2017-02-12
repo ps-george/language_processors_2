@@ -17,6 +17,8 @@ constraints on the input language are:
 
   - Functions have one parameter, which _must_ be surrounded by
     parenthesis.
+    
+  - `exp` and `log` are both natural (base _e_).
 
 - _Numbers_ are expressed as decimal numbers. These must
   start with an integer digit, may have a fractional part,
@@ -104,14 +106,39 @@ and the canonical printer will produce:
 ```
 $ bin/print_canonical
 7+8
+
 ( 7 + 8 )
 ```
+Note that the input `7+8` can be terminated by using
+`control+d` to indicate the [end of the input stream](https://en.wikipedia.org/wiki/End-of-Transmission_character).
+This will cause the pretty-printer (or any program) to conclude that no
+more input is going to arrive over `stdin`, and it should conclude its
+work. Until the parser knows that there is no more input, it can't
+return the AST, as if it sees the input `x`, it can't be sure it
+won't be followed by arbitrary numbers of `+x` which make the expression longer.
+
+When manually typing input the whitespace between input and output could
+vary while still being correct. So it could look like this:
+```
+$ bin/print_canonical
+7+8
+
+
+( 7 + 8 )
+```
+if you hit return twice before the stream ends, or like this:
+```
+$ bin/print_canonical
+7+8( 7 + 8 )
+```
+if you end the stream without pressing return. Generally you should
+use typed input as a debugging and exploration tool, and rely more on automated
+and repeatable tests from files for proper testing.
 
 Given the input:
 ````
 7*x +5*
  -5 * y
-$
 ````
 the code should do the equivalent of:
 ````
@@ -134,6 +161,7 @@ and the canonical printer will produce:
 $ bin/print_canonical
 7*x +5*
  -5 * y
+ 
 ( ( 7 * x ) + ( ( 5 * -5 ) * y ) )
 $
 ````
@@ -142,7 +170,7 @@ Testing
 -------
 
 There is a script called `test_parser.sh`, which
-applies the tests used during assesment. During
+applies the tests used during assessment. During
 testing it will perform two tasks:
 
 - Check that the expressions in [test/valid_expressions.input.txt](test/valid_expressions.input.txt)
@@ -165,7 +193,8 @@ pass in a map that gives bindings (numbers) for `x` and `y`.
 
 Currently `Expression::evaluate` throws an exception.
 Implement `evaluate` for the various parts of the AST,
-and complete the program called `src/eval_expr.cpp`. This should
+and give the source for a program called `src/eval_expr.cpp`, and
+which is built using `make bin/eval_expr`. This should
 take a list of variable bindings on the command line,
 where each binding is a variable and a number separated
 by spaces, then evaluate an expression read from `stdin`.
@@ -177,6 +206,7 @@ Example
 Assume we have the expression `x+6`, and want to evaluate
 it with `x=7`: The usage should be:
 ````
+$ make bin/eval_expr
 $ bin/eval_expr x 7
 x+6
 13.000000
@@ -192,6 +222,7 @@ Another example:
 ````
 $ bin/eval_expr a 4 b 7 c -3
 (c+7)*b+c
+
 25.000000
 ````
 
@@ -205,7 +236,7 @@ the derivative as a new tree. Currently this is not implemented
 and throws an exception.
 
 Implement differentiation for the AST, and create a new program
-called `diff_expr.cpp` that takes a set of one or more variables as
+called `src/diff_expr.cpp` that takes a set of one or more variables as
 input parameters, and differentiates the sequence with respect to each variable.
 The output should be a transformed expression that meets the
 specifications of the input language.
@@ -217,11 +248,15 @@ number of strings (why?)_
 
 For example:
 ````
+$ make bin/diff_expr
 $ bin/diff_expr x y x
 x*(x+2*y)*x/z*x + y *x
 12*x/z
 $
 ````
+
+No simplification of the output expressions is required, nor
+is it an error to (correctly) simplify the results.
 
 Submission
 ==========
