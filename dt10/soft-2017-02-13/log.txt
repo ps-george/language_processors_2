@@ -1,0 +1,315 @@
+Note that each submission has not been looked at manually, they
+have only been randomly sampled to get an idea if the test automation.
+is working for most submission. If the build system appears
+to be broken, please raise an issue (though stability of these
+runs is not a huge priority).
+
+gsp14 : Fetching repo
+gsp14 : Checking out branch soft-2017-02-13 if it exists...
+Already on 'soft-2017-02-13'
+M	2-parsers/test_parser.sh
+gsp14 : Forcing branch back to hash 9e8d589d240b76a2f3be451caaaf7b03856903c4
+HEAD is now at 9e8d589 Merge branch 'master' of https://github.com/LangProc/langproc-2016-lab into shrink
+gsp14 : Checking we're on branch soft-2017-02-13
+cd ${REPOS}/$U && git rev-parse --abbrev-ref HEAD
+gsp14 : Checking we're on the right hash 9e8d589d240b76a2f3be451caaaf7b03856903c4...
+cd ${REPOS}/$U && git rev-parse $RUN
+
+do_or_die "Overwriting test inputs with ones from spec." \
+    cp $SCRATCH/spec/2-parsers/test/*.txt $REPO/2-parsers/test
+gsp14 : Overwriting test inputs with ones from spec.
+
+do_or_die "Overwriting test_parser.sh with one from spec." \
+    cp $SCRATCH/spec/2-parsers/test_parser.sh $REPO/2-parsers/test_parser.sh
+gsp14 : Overwriting test_parser.sh with one from spec.
+
+do_or_die "Ensuring test_parser.sh is executable." \
+    chmod u+x $REPO/2-parsers/test_parser.sh
+gsp14 : Ensuring test_parser.sh is executable.
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 1"
+gsp14 : ## Part 1
+
+log_msg "Part 1 : Removing any existing binary"
+gsp14 : Part 1 : Removing any existing binary
+(cd $REPO/2-parsers && rm bin/print_canonical)
+
+log_msg "Part 1 : Running test"
+gsp14 : Part 1 : Running test
+(cd $REPO/2-parsers && ./test_parser.sh)
+/usr/bin/dos2unix
+========================================
+ Cleaning the temporaries and outputs
+rm -f src/*.o
+rm -f src/*.tab.*
+rm -f bin/*
+rm -f src/*.tab.cpp
+rm -f src/*.yy.cpp
+ Force building bin/print_canonical
+g++  -std=c++11 -W -Wall -g -Wno-unused-parameter -I include  -c -o src/print_canonical.o src/print_canonical.cpp
+bison -v -d src/maths_parser.y -o src/maths_parser.tab.cpp
+g++  -std=c++11 -W -Wall -g -Wno-unused-parameter -I include  -c -o src/maths_parser.tab.o src/maths_parser.tab.cpp
+bison -v -d src/maths_parser.y -o src/maths_parser.tab.cpp
+flex -o src/maths_lexer.yy.cpp  src/maths_lexer.flex
+g++  -std=c++11 -W -Wall -g -Wno-unused-parameter -I include  -c -o src/maths_lexer.yy.o src/maths_lexer.yy.cpp
+src/maths_lexer.yy.cpp: In function ‘int yy_get_next_buffer()’:
+src/maths_lexer.yy.cpp:1099:44: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if ((int) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+                                            ^
+src/maths_lexer.yy.cpp: At global scope:
+src/maths_lexer.yy.cpp:1175:17: warning: ‘void yyunput(int, char*)’ defined but not used [-Wunused-function]
+     static void yyunput (int c, char * yy_bp )
+                 ^
+mkdir -p bin
+g++ -std=c++11 -W -Wall -g -Wno-unused-parameter -I include -o bin/print_canonical src/print_canonical.o src/maths_parser.tab.o src/maths_lexer.yy.o
+
+=========================================
+Checking that good expressions are parsed
+===========================
+
+Input : 0
+Output : 0
+===========================
+
+Input : -10.5
+Output : -10.5
+===========================
+
+Input : x
+Output : x
+===========================
+
+Input : xx
+Output : xx
+===========================
+
+Input :   acbsddfs
+Output : acbsddfs
+===========================
+
+Input : x+y
+Output : ( x + y )
+===========================
+
+Input : x + y
+Output : ( x + y )
+===========================
+
+Input :  x+y
+Output : ( x + y )
+===========================
+
+Input : 0 + y
+Output : ( 0 + y )
+===========================
+
+Input : x *  1 + x
+Output : ( ( x * 1 ) + x )
+===========================
+
+Input : x - 1 + x
+Output : ( ( x - 1 ) + x )
+===========================
+
+Input : x*x+x*x+x*x
+Output : ( ( ( x * x ) + ( x * x ) ) + ( x * x ) )
+===========================
+
+Input : x*(x+x*x+x)*x
+Output : ( ( x * ( ( x + ( x * x ) ) + x ) ) * x )
+===========================
+
+Input : x*(y+x*x*y+x)*y
+Output : ( ( x * ( ( y + ( ( x * x ) * y ) ) + x ) ) * y )
+===========================
+
+Input : x*(y+x*x*y+x+3.1)*y
+Output : ( ( x * ( ( ( y + ( ( x * x ) * y ) ) + x ) + 3.1 ) ) * y )
+===========================
+
+Input : log(x)
+Output : log( x )
+===========================
+
+Input : exp(-2)
+Output : exp( -2 )
+===========================
+
+Input : exp(z) * sqrt( log(1.0/x) )
+Output : ( exp( z ) * sqrt( log( ( 1 / x ) ) ) )
+===========================
+
+Input : x*4/x*10+11/22*1-x+zzzz-     4
+Output : ( ( ( ( ( ( ( x * 4 ) / x ) * 10 ) + ( ( 11 / 22 ) * 1 ) ) - x ) + zzzz ) - 4 )
+===========================
+
+Input : 1/(x+1/(x+1/(x+y)))
+Output : ( 1 / ( x + ( 1 / ( x + ( 1 / ( x + y ) ) ) ) ) )
+===========================
+
+Input : x- 1
+Output : ( x - 1 )
+===========================
+
+Input : x- -1
+Output : ( x - -1 )
+
+=========================================
+Checking that bad expressions are not parsed
+===========================
+
+Input : 0 0
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : x x
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : Ax
+Invalid token
+Output : 
+Exit code : 1
+===========================
+
+Input : -
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : +
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : log(log)
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : sqrt(--10)
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : -exp(x+x)
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : x - - x
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : x-1
+Parse error : syntax error
+Output : 
+Exit code : 1
+===========================
+
+Input : x -1
+Parse error : syntax error
+Output : 
+Exit code : 1
+########################################
+Passed 33 out of 33.
+
+
+log_msg "Part 1 : Capturing outputs"
+gsp14 : Part 1 : Capturing outputs
+(cd $REPO/2-parsers/test && tar -czf $LOGDIR/2-parsers-a.tar.gz  *.txt)
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 2"
+gsp14 : ## Part 2
+
+log_msg "Part 2 : Removing any existing binary"
+gsp14 : Part 2 : Removing any existing binary
+(cd $REPO/2-parsers && rm bin/eval_expr)
+rm: cannot remove 'bin/eval_expr': No such file or directory
+
+log_msg "Part 2 : Attempting to build eval_expr"
+gsp14 : Part 2 : Attempting to build eval_expr
+(cd $REPO/2-parsers && make bin/eval_expr)
+g++  -std=c++11 -W -Wall -g -Wno-unused-parameter -I include  -c -o src/eval_expr.o src/eval_expr.cpp
+g++  -std=c++11 -W -Wall -g -Wno-unused-parameter -I include  -c -o src/maths_parser.tab.o src/maths_parser.tab.cpp
+mkdir -p bin
+g++ -std=c++11 -W -Wall -g -Wno-unused-parameter -I include -o bin/eval_expr src/eval_expr.o src/maths_parser.tab.o src/maths_lexer.yy.o
+
+if [[ -f $REPO/2-parsers/bin/eval_expr ]]; then
+    log_msg "Part 2 : Putting value through, expecting output of '13.000000'"
+    (cd $REPO/2-parsers && echo "x+6" | bin/eval_expr x 7 | head -c 10000 )
+else
+    log_msg "Part 2 : No binary built"
+fi
+gsp14 : Part 2 : Putting value through, expecting output of '13.000000'
+Bindings:
+x=7.000000
+13.000000
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 3"
+gsp14 : ## Part 3
+
+log_msg "Part 3 : Removing any existing binary"
+gsp14 : Part 3 : Removing any existing binary
+(cd $REPO/2-parsers && rm bin/diff_expr)
+rm: cannot remove 'bin/diff_expr': No such file or directory
+
+log_msg "Part 3 : Attempting to build diff_expr"
+gsp14 : Part 3 : Attempting to build diff_expr
+(cd $REPO/2-parsers && make bin/diff_expr)
+g++  -std=c++11 -W -Wall -g -Wno-unused-parameter -I include  -c -o src/diff_expr.o src/diff_expr.cpp
+mkdir -p bin
+g++ -std=c++11 -W -Wall -g -Wno-unused-parameter -I include -o bin/diff_expr src/diff_expr.o src/maths_parser.tab.o src/maths_lexer.yy.o
+
+if [[ -f $REPO/2-parsers/bin/diff_expr ]]; then
+    log_msg "Part 3 : Single check, expect something that is d^3 ( x*(x+2*y)*x/z*x + y *x ) / (dx dy dx)"
+    (cd $REPO/2-parsers && echo -e "x*(x+2*y)*x/z*x + y *x" | bin/diff_expr x y x | head -c 1000000 )
+else
+    log_msg "Part 3 : No binary built"
+fi
+gsp14 : Part 3 : Single check, expect something that is d^3 ( x*(x+2*y)*x/z*x + y *x ) / (dx dy dx)
+Changes: 158
+Changes: 30
+Changes: 4
+Changes: 17
+Changes: 1
+Changes: 7
+Changes: 6
+Changes: 13
+Changes: 10
+Changes: 27
+Changes: 7
+Changes: 17
+Changes: 16
+Changes: 10
+Changes: 4
+Changes: 3
+Changes: 2
+Changes: 1
+Changes: 1
+Changes: 1
+Changes: 1
+Changes: 0
+( ( ( ( ( ( ( 4 * z ) * ( z * z ) ) * ( ( z * z ) * ( z * z ) ) ) / ( ( ( z * z ) * ( z * z ) ) * ( ( z * z ) * ( z * z ) ) ) ) * x ) + ( ( ( ( ( 2 * x ) + ( x * 2 ) ) * z ) * ( z * z ) ) / ( ( z * z ) * ( z * z ) ) ) ) + ( ( ( ( ( 2 * x ) + ( x * 2 ) ) * z ) * ( z * z ) ) / ( ( z * z ) * ( z * z ) ) ) )
+
+gsp14 : Test Complete
