@@ -47,6 +47,26 @@ void CompileRec(
     
     std::cout << "add " << destReg << " " << left << " " << right << std::endl;
   
+  }else if(program->type=="LessThan"){
+    std::string left = makeName("left");
+    std::string right = makeName("right");
+    // Compile the left
+    CompileRec(left, program->branches.at(0));
+    // Compile the right
+    CompileRec(right, program->branches.at(1));
+    
+    std::cout << "lt " << destReg << " " << left << " " << right << std::endl;
+  
+  }else if(program->type=="Sub"){
+    std::string left = makeName("left");
+    std::string right = makeName("right");
+    // Compile the left
+    CompileRec(left, program->branches.at(0));
+    // Compile the right
+    CompileRec(right, program->branches.at(1));
+    
+    std::cout << "sub " << destReg << " " << left << " " << right << std::endl;
+  
   }else if(program->type=="Assign"){
     // Create a zero register
     std::string zero = makeName("zero");
@@ -81,6 +101,28 @@ void CompileRec(
     std::cout << "beq " << zero << " " << zero << " " << start << std::endl;
     // the end label
     std::cout << ":" << end << std::endl;
+  }else if (program->type=="If"){
+    std::string zero = makeName("zero");
+    std::cout<<"const "<<zero<<" 0"<<std::endl;
+    
+    std::string c = makeName("condition");
+    std::string stat2 = makeName("stat2");
+    std::string end = makeName("end");
+    // Compile the condition into destination register
+    CompileRec(c, program->branches.at(0));
+    // If the condition is equal to 0, skip to the else statement
+    std::cout << "beq " << c << " " << zero << " " << stat2 << std::endl;
+    CompileRec(destReg, program->branches.at(1));
+    // Goto the end after the if statement
+    std::cout << "beq " << zero << " " << zero << " " << end << std::endl;
+    std::cout << ":" << stat2 << std::endl;
+    CompileRec(destReg, program->branches.at(2));
+    // 
+    std::cout << ":" << end << std::endl;
+  }else if(program->type=="Output"){
+    CompileRec(destReg, program->branches.at(0));
+    std::cout << "output " << destReg << std::endl;
+  
   }else{
       throw std::runtime_error("Unknown construct '"+program->type+"'");
   }
