@@ -24,13 +24,21 @@ struct Tree
         : type(_type)
         , value(_value)
     {}
+      
     
     template<class ...TArgs>
     Tree(std::string _type, TArgs ...args)
         : type(_type)
         , branches{args...}
     {}
-
+      
+    template<class ...TArgs>
+    Tree(std::string _type, std::string _value, TArgs ...args)
+        : type(_type)
+        , value(_value)
+        , branches{args...}
+    {}
+      
     std::string type;
     std::string value;
     std::vector<TreePtr> branches;
@@ -49,6 +57,8 @@ inline TreePtr Input(std::string id)
 inline TreePtr Output(TreePtr expr)
 { return std::make_shared<Tree>("Output", expr); }
 
+//inline TreePtr Param(std::string value)
+//{ return std::make_shared<Tree>("Param  ", value); }
 
 inline TreePtr Add(TreePtr left, TreePtr right)
 { return std::make_shared<Tree>("Add", left, right); }
@@ -59,6 +69,8 @@ inline TreePtr Sub(TreePtr left, TreePtr right)
 inline TreePtr LessThan(TreePtr left, TreePtr right)
 { return std::make_shared<Tree>("LessThan", left, right); }
 
+inline TreePtr Assign(std::string id, TreePtr right)
+{ return std::make_shared<Tree>("Assign", id, right); }
 
 inline TreePtr Seq(std::initializer_list<TreePtr> statements)
 { return std::make_shared<Tree>("Seq", statements); }
@@ -66,8 +78,9 @@ inline TreePtr Seq(std::initializer_list<TreePtr> statements)
 inline TreePtr While(TreePtr cond, TreePtr stat)
 { return std::make_shared<Tree>("While", cond, stat ); }
 
-inline TreePtr IfElse(TreePtr cond, TreePtr stat1, TreePtr stat2)
-{ return std::make_shared<Tree>("IfElse", cond, stat1, stat2); }
+inline TreePtr If(TreePtr cond, TreePtr stat1, TreePtr stat2)
+{ return std::make_shared<Tree>("If", cond, stat1, stat2); }
+
 
 TreePtr Parse(
     std::istream &src
