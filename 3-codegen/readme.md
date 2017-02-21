@@ -33,6 +33,15 @@ The language has the feature that variables do not need to
 be declared, so the variable `x` is declared when it
 is first assigned.
 
+As a consequence of not requiring declarations, this language
+also only has a single global scope. So the variable `x` always
+refers to the same variable, no matter where it is used. This
+behaviour is chosen to make the problem simpler for the lab; obviously
+in C you'll need to manage different scopes in some way. (_Thanks
+to @lorenzo2897 for [pointing out](https://github.com/LangProc/langproc-2016-lab/issues/40) this
+wasn't explicit).
+
+
 Language Constructs
 -------------------
 
@@ -59,12 +68,18 @@ Input programs can contain the following constructs:
 - Variable: `variable`
 
   A variable matches the regex `[a-z][a-z0-9]*. It returns the value of the variable,
-  which must already have been given a value elsewhere in the program.
+  which must already have been given a value elsewhere in the program. All variables
+  appear at global scope, so a variable `x` will always refer to the same variable,
+  no matter where it appears.
   
 - Input: `Input`
 
   Reads an integer from the input stream of numbers and returns it. Note that it
   is not an variable because it is not lower-case.
+  
+- Param : `Param : I`
+
+  Return the input parameter with index I.
   
 - Output: `Output [ X ]`
 
@@ -229,7 +244,9 @@ the implementation, based on the semantics given earlier.
 
 The test script `./test_interpreter.sh` applies the interpreter
 to a number of different input programs in `test/programs`, and
-checks that the outputs and results are correct.
+checks that the outputs and results are correct. Note that by
+default one of the tests [already passes](#43), as the skeleton
+interpreter already handles numbers.
 
 
 Basic Part 2 (30%): Code generation
@@ -257,9 +274,9 @@ The supported assembly instructions are:
         
 - `lt dstReg srcRegA srcRegB` : If srcRegA < srcRegB, then dstReg=1, otherwise dstReg=0.
 
-- `beq dstReg srcRegA label` : If srcRegA == srcRegB, then jump to label.
+- `beq srcRegA srcRegB label` : If srcRegA == srcRegB, then jump to label.
 
-- `bne dstReg srcRegA label` : If srcRegA != srcRegB, then jump to label.
+- `bne srcRegA srcRegB label` : If srcRegA != srcRegB, then jump to label.
 
 - `halt srcReg` : Halt the program and return value in srcReg.
 
@@ -490,28 +507,32 @@ So something like:
 SRCFILE=$1  # Program to optimise
 
 CHANGED=1;
-while [[ "$CHANGED" -ne 0 ]]; then
+while [[ "$CHANGED" -ne 0 ]]; do
   CHANGED=0;
 
   cat $SRCFILE | bin/constant_fold > $SRCFILE.tmp
-  if [[ "$?" -ne "0" ]]; then
+  if [[ "$?" -eq "0" ]]; then
     CHANGED=1;
   fi
   cp $SRCFILE.tmp $SRCFILE
   
   cat $SRCFILE | bin/dead_branch_removal > $SRCFILE.tmp
-  if [[ "$?" -ne "0" ]]; then
+  if [[ "$?" -eq "0" ]]; then
     CHANGED=1;
   fi
   cp $SRCFILE.tmp $SRCFILE
   
   cat $SRCFILE | bin/constant_propagation > $SRCFILE.tmp
-  if [[ "$?" -ne "0" ]]; then
+  if [[ "$?" -eq "0" ]]; then
     CHANGED=1;
   fi
   cp $SRCFILE.tmp $SRCFILE
 fi
 ```
+(Initial version was intended to be a sketch, rather than
+verbatim code; however, @fexter-svk [suggested changes](https://github.com/LangProc/langproc-2016-lab/issues/37) to
+make it executable.
+
 As long as the program keeps getting smaller, we might as
 well keep optimising it. A natural question is "what if we
 get stuck in an infinite loop?". Some reasoning suggests
@@ -547,7 +568,7 @@ $
 Some observations:
 
 - You'll need to use a MIPS toolchain to do some parts of it (e.g.
-  assembling and linking)
+  assembling and linking).
 
 - The MIPS executable will only run if you have QEMU installed (or
   you're on a MIPS machine!)
@@ -561,6 +582,11 @@ Some observations:
   constructs and types is much smaller than in C.
 
 - Generating MIPS assembly is not the only way of getting an executable...
+
+Both the MIPS toolchain and QEMU are installed by default in both
+the Lab Ubuntu setup and the Vagrant Ubuntu machine. If you are
+using another platform/OS you'll need to work out how to install
+them for your system.
 
 Submission
 ==========
