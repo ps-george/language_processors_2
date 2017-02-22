@@ -105,5 +105,10 @@ void Compile(
     TreePtr program
 );
 
+void ConstantFold(
+  TreePtr node,
+  int &changed
+);
+
 
 #endif

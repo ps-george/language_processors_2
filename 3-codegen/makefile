@@ -11,6 +11,7 @@ bin/compiler : src/ast_parse.o src/ast_pretty_print.o src/ast_compile.o
 
 bin/pretty_print : src/ast_parse.o src/ast_pretty_print.o
 
+bin/constant_fold : src/ast_parse.o src/ast_pretty_print.o src/ast_constant_fold.o
 
 clean :
 	-rm -f bin/*

@@ -1,0 +1,4 @@
+Seq [
+  Assign : x [ Param 0 ]
+  Sub [ x Add [ 4 5 ] ]
+]
