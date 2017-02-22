@@ -1,0 +1,15 @@
+Seq [
+  Assign : x [
+    10
+  ]
+  Assign : y [
+    20
+  ]
+  Assign : z [
+    30
+  ]
+  Output [
+    10
+  ]
+  10
+]

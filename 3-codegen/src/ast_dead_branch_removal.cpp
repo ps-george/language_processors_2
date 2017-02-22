@@ -36,6 +36,24 @@ void DeadBranchRemoval(TreePtr node, int &changed)
         changed++;
       }
     }
+    
+    // If the node type is a while and condition is 0, remove the while completely
+    if (node->type == "While") {
+      std::string cond;
+      // If the condition is a constant
+      cond = node->branches.at(0)->type;
+      if (regex_match(cond, reNum)){
+        int32_t value = stoi(cond);
+        TreePtr stat = node->branches.at(1);
+        if (value==0){
+          // replace this with nothing
+          node->type = "";
+          node->value = "";
+          node->branches.clear();
+          changed++;
+        }
+      }
+    }
     for (unsigned i = 0; i < node->branches.size(); i++) {
       DeadBranchRemoval(node->branches[i], changed);
     }

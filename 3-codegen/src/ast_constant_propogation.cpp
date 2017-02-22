@@ -28,7 +28,6 @@ void ConstantPropogation(std::map<std::string,std::string>& bindings, TreePtr no
     if (node->type == "If"){
       TreePtr stat1 = node->branches.at(1);
       TreePtr stat2 = node->branches.at(2);
-      
       // If either of the if statements are an assign
       // remove the bindings for the things being assign
       if ((stat1->type == "Assign")||(stat2->type == "Assign")){
@@ -49,6 +48,19 @@ void ConstantPropogation(std::map<std::string,std::string>& bindings, TreePtr no
         else {
           ConstantPropogation(bindings, node->branches.at(0), changed);
           return;
+        }
+        ConstantPropogation(bindings, node->branches.at(0), changed);
+        return;
+      }
+    }
+    
+    // if node is a While, similar behaviour to if it is an if
+    if (node->type == "While") {
+      TreePtr stat = node->branches.at(1);
+      if ((stat->type == "Assign")){
+        if (bindings.count(stat->value)){
+          std::cerr << "    Remove binding: " << stat->value << " = " << bindings[stat->value] << std::endl;
+          bindings.erase(stat->value);
         }
         ConstantPropogation(bindings, node->branches.at(0), changed);
         return;
