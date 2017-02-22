@@ -69,7 +69,7 @@ for i in test/optimise/*; do
   echo "Working dir : working/${b}"
   
   cp $i/in.code.txt working/$b/in.code.txt
-  read -p "Enter to continue..."
+  # read -p "Enter to continue..."
   
   CHANGED=1;
   while [[ "$CHANGED" -ne 0 ]]; do
@@ -109,5 +109,8 @@ for i in test/optimise/*; do
       PASSED=$(( ${PASSED}+1 ));
   fi
   CHECKED=$(( ${CHECKED}+1 ));
-  
 done
+
+echo "########################################"
+echo "Passed ${PASSED} out of ${CHECKED}".
+echo ""
