@@ -1,0 +1,8 @@
+Seq [
+  Assign : y [
+    5
+  ]
+  Assign : x [
+    11
+  ]
+]

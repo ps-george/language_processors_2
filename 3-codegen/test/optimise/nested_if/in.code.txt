@@ -1,0 +1,10 @@
+Seq [ 
+  Assign : y [ 5 ]
+  If [ If [ 0 
+    Assign : x [ 10 ]
+    0
+  ]
+    Assign : x [ 10 ]
+    Assign : x [ 11 ]
+  ]
+]

@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     DeadBranchRemoval(src, changed);
     
     PrettyPrint(std::cout, src);
-    std::cerr << "Number of changes: " << changed << std::endl;
+    std::cerr << "Dead branches removed: " << changed << std::endl;
     if (changed>0){
       return 0;
     }

@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 
   PrettyPrint(std::cout, src);
 
-  std::cerr << "Number of changes: " << changed << std::endl;
+  std::cerr << "Constants propogated: " << changed << std::endl;
   if (changed > 0) {
     return 0;
   }

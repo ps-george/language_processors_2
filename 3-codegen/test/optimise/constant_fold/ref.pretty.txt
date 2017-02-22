@@ -1,0 +1,10 @@
+Seq [
+  Assign : x [
+    Param
+    0
+  ]
+  Sub [
+    x
+    9
+  ]
+]

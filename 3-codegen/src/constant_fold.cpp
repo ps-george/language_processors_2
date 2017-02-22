@@ -11,7 +11,8 @@ int main(int argc, char *argv[])
     ConstantFold(src, changed);
     
     PrettyPrint(std::cout, src);
-    std::cerr << "Number of changes: " << changed << std::endl;
+    std::cerr << "Constants folded: " << changed << std::endl;
+    
     if (changed>0){
       return 0;
     }

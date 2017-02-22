@@ -1,0 +1,7 @@
+Seq [
+  Assign : x [ 5 ]
+  Assign : y [ 5 ]
+  Assign : x [ 3 ]
+  Assign : z [ 5 ]
+  Assign : w [ 5 ]
+]

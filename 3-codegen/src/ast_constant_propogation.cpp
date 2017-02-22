@@ -18,13 +18,43 @@ void ConstantPropogation(std::map<std::string,std::string>& bindings, TreePtr no
     // if there exists a binding
     if (bindings.count(node->type)){
       // Change the node from a variable to a constant
-      std::cerr << "Applying binding: " << node->type << " = " << bindings[node->type] << std::endl;
+      std::cerr << "    Apply binding:  " << node->type << " = " << bindings[node->type] << std::endl;
       node->type = bindings[node->type];
       changed++;
     }
   }
   
   if (node->branches.size() > 0) {
+    if (node->type == "If"){
+      TreePtr stat1 = node->branches.at(1);
+      TreePtr stat2 = node->branches.at(2);
+      
+      // If either of the if statements are an assign
+      // remove the bindings for the things being assign
+      if ((stat1->type == "Assign")||(stat2->type == "Assign")){
+        if (stat1->type == "Assign") {
+          if (bindings.count(stat1->value)){
+            std::cerr << "    Remove binding: " << stat1->value << " = " << bindings[stat1->value] << std::endl;
+            bindings.erase(stat1->value);
+            ConstantPropogation(bindings, stat2, changed);
+          }
+        }
+        else if (stat2->type == "Assign") {
+          if (bindings.count(stat2->value)){
+            std::cerr << "    Remove binding: " << stat2->value << " = " << bindings[stat2->value] << std::endl;
+            bindings.erase(stat2->value);
+            ConstantPropogation(bindings, stat1, changed);
+          }
+        }
+        else {
+          ConstantPropogation(bindings, node->branches.at(0), changed);
+          return;
+        }
+        ConstantPropogation(bindings, node->branches.at(0), changed);
+        return;
+      }
+    }
+    
     // if the node is an assign
     if (node->type == "Assign"){
       // std::cerr << "Type: " << node->type << std::endl;
@@ -32,12 +62,12 @@ void ConstantPropogation(std::map<std::string,std::string>& bindings, TreePtr no
       // if the thing being assigned is a constant
       // if binding already exists, delete it.
       if (bindings.count(node->value)){
-        std::cerr << "Removing binding: " << node->value << " = " << bindings[node->value] << std::endl;
+        std::cerr << "    Remove binding: " << node->value << " = " << bindings[node->value] << std::endl;
         bindings.erase(node->value);
       }
       if (regex_match(node->branches.at(0)->type, reNum)){
         // Until the next assignment of the same variable, replace all future instances of that variable to the constant
-        std::cerr << "Adding binding: " << node->value << " = " << node->branches.at(0)->type << std::endl;
+        std::cerr << "    Adding binding: " << node->value << " = " << node->branches.at(0)->type << std::endl;
         bindings[node->value] =  node->branches.at(0)->type;
       }
     }
