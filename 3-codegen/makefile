@@ -13,6 +13,8 @@ bin/pretty_print : src/ast_parse.o src/ast_pretty_print.o
 
 bin/constant_fold : src/ast_parse.o src/ast_pretty_print.o src/ast_constant_fold.o
 
+bin/constant_propogation : src/ast_parse.o src/ast_pretty_print.o src/ast_constant_propogation.o
+
 clean :
 	-rm -f bin/*
 	-rm -f src/*.o

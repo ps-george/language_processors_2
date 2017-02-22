@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     TreePtr src=Parse(std::cin);
     
-    // Constant propogation
+    // Constant fold
     int changed = 0;
     ConstantFold(src, changed);
     

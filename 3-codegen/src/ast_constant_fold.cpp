@@ -1,6 +1,5 @@
 #include "ast.hpp"
 #include <iostream>
-#include <stdexcept>
 #include <regex>
 
 void ConstantFold(TreePtr node, int &changed) 
@@ -8,7 +7,7 @@ void ConstantFold(TreePtr node, int &changed)
   std::regex reNum("^-?[0-9]+$");
   /*
   std::cerr << "Type: " << node->type << std::endl;
-  std::cerr << "Value: " << node->type << std::endl;
+  std::cerr << "Value: " << node->value << std::endl;
   std::cerr << "Num. branches: " << node->branches.size() << std::endl;
   */
  

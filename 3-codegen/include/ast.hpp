@@ -110,5 +110,10 @@ void ConstantFold(
   int &changed
 );
 
+void ConstantPropogation(
+  std::map<std::string,std::string>& bindings,
+  TreePtr node,
+  int &changed
+);
 
 #endif
