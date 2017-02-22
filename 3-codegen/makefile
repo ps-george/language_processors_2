@@ -17,6 +17,8 @@ bin/constant_propogation : src/ast_parse.o src/ast_pretty_print.o src/ast_consta
 
 bin/dead_branch_removal : src/ast_parse.o src/ast_pretty_print.o src/ast_dead_branch_removal.o
 
+bin/generate_mips : src/ast_parse.o src/ast_pretty_print.o
+
 clean :
 	-rm -f bin/*
 	-rm -f src/*.o
