@@ -52,6 +52,9 @@ void DeadBranchRemoval(TreePtr node, int &changed)
           node->branches.clear();
           changed++;
         }
+        else {
+          std::cerr << "Infinite loop detected during optimisation." << std::endl;
+        }
       }
     }
     for (unsigned i = 0; i < node->branches.size(); i++) {

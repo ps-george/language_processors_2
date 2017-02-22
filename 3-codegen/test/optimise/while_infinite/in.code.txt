@@ -1,0 +1,13 @@
+Seq [ 
+  Assign : x [ 10 ]
+  Assign : y [ 20 ]
+  Assign : z [ Add [ x y ] ]
+  If [ z
+    Output [ x ]
+    Assign : x [ 0 ]
+  ]
+  While [ z 
+    Assign : x [ 1 ]
+  ]
+  x
+]

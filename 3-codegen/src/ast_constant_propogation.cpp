@@ -54,15 +54,16 @@ void ConstantPropogation(std::map<std::string,std::string>& bindings, TreePtr no
       }
     }
     
-    // if node is a While, similar behaviour to if it is an if
+    // if node is a While, similar behaviour to if it were an if
     if (node->type == "While") {
+      TreePtr cond = node->branches.at(0);
       TreePtr stat = node->branches.at(1);
       if ((stat->type == "Assign")){
         if (bindings.count(stat->value)){
           std::cerr << "    Remove binding: " << stat->value << " = " << bindings[stat->value] << std::endl;
           bindings.erase(stat->value);
         }
-        ConstantPropogation(bindings, node->branches.at(0), changed);
+        ConstantPropogation(bindings, cond, changed);
         return;
       }
     }
