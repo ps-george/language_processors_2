@@ -12,13 +12,6 @@ int32_t Interpret(
     //! Primitive returns constant value
     if( regex_match(program->type, reNum) ){
         return std::atol(program->type.c_str());
-        
-    // Check for things matching reId
-    //! Primitive returns value in bindings
-    }else if( regex_match(program->type, reId) ){
-      std::cerr << " id=" << program->type;
-      auto value=context.bindings.at(program->type);
-      return value;
       
     //! Primitive returns value in command-line arg parameters
     }else if(program->type=="Param"){
@@ -81,8 +74,13 @@ int32_t Interpret(
       else {
         return Interpret(context, program->branches.at(2));
       }
-      
+    // Check for things matching reId
+    //! Primitive returns value in bindings
+    }else if( regex_match(program->type, reId) ){
+      std::cerr << " id=" << program->type;
+      auto value=context.bindings.at(program->type);
+      return value;
     }else{
-        throw std::runtime_error("Unknown construct '"+program->type+"'");
+      throw std::runtime_error("Unknown construct '"+program->type+"'");
     }
 }

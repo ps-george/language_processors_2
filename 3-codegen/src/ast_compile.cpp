@@ -18,12 +18,6 @@ void CompileRec(
   if (regex_match(program->type, reNum)) {
     std::cout << "const " << destReg << " " << program->type << std::endl;
 
-  } else if (regex_match(program->type, reId)) {
-    std::string zero = makeName("zero");
-    std::cout << "const " << zero << " 0" << std::endl;
-    std::cout << "add " << destReg << " " << program->type << " " << zero
-              << std::endl;
-
   } else if (program->type == "Param") {
     std::cout << "param " << destReg << " " << program->value << std::endl;
 
@@ -122,6 +116,11 @@ void CompileRec(
     CompileRec(destReg, program->branches.at(0));
     std::cout << "output " << destReg << std::endl;
 
+  } else if (regex_match(program->type, reId)) {
+    std::string zero = makeName("zero");
+    std::cout << "const " << zero << " 0" << std::endl;
+    std::cout << "add " << destReg << " " << program->type << " " << zero
+              << std::endl;
   } else {
     throw std::runtime_error("Unknown construct '" + program->type + "'");
   }
