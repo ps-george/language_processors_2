@@ -105,6 +105,10 @@ void Compile(
     TreePtr program
 );
 
+void GenerateC(std::ostream &dst,
+    TreePtr program
+);
+
 void ConstantFold(
   TreePtr node,
   int &changed

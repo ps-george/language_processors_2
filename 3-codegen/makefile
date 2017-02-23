@@ -17,7 +17,11 @@ bin/constant_propogation : src/ast_parse.o src/ast_pretty_print.o src/ast_consta
 
 bin/dead_branch_removal : src/ast_parse.o src/ast_pretty_print.o src/ast_dead_branch_removal.o
 
-bin/generate_mips : src/ast_parse.o src/ast_pretty_print.o
+bin/generate_c : src/ast_parse.o src/ast_pretty_print.o src/ast_generate_c.o
+
+bin/generate_mips : bin/generate_c
+	cp src/generate_mips.sh bin/generate_mips
+	chmod +x bin/generate_mips
 
 clean :
 	-rm -f bin/*

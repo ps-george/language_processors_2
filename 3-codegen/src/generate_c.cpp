@@ -32,9 +32,9 @@ int main(int argc, char *argv[])
     TreePtr src=Parse(in);
     
     // Generate mips code instead of pretty print
+    GenerateC(out, src);
     
-    
-    PrettyPrint(out, src);
+    ///PrettyPrint(out, src);
     
     return 0;
 }
