@@ -5,7 +5,7 @@
 int main(int argc, char *argv[]) {
   TreePtr src = Parse(std::cin);
 
-  // Constant propogation
+  // Constant propagation
   int changed = 0;
   std::map<std::string, std::string> bindings;
   ConstantPropagation(bindings, src, changed);

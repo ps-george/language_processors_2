@@ -83,7 +83,7 @@ for i in test/optimise/*; do
       fi
     cp working/$b/got.output.txt working/$b/in.code.txt
     
-    # Try constant propogation
+    # Try constant propagation
     cat working/$b/in.code.txt | bin/constant_propagation \
       > working/$b/got.output.txt
         
