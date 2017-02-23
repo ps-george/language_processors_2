@@ -15,7 +15,7 @@ void CompileC(std::ostream &dst, TreePtr program) {
     // If it's a parameter... ignore it? Not supporting parameter.
     dst << "getParam(" << program->value << ")";
   } else if (program->type == "Seq") {
-    // If it's a sequence, print 
+    // If it's a sequence, print
     for (unsigned i = 0; i < program->branches.size(); i++) {
       CompileC(dst,program->branches[i]);
       dst << ";\n";
@@ -46,7 +46,7 @@ void CompileC(std::ostream &dst, TreePtr program) {
 
   } else if (program->type == "Assign") {
     // Assign the value of the assign branch to destReg
-    dst << program->value << " = ";
+    dst << "int " << program->value << " = ";
     CompileC(dst,program->branches.at(0));
     //dst << ';';
 
@@ -63,7 +63,7 @@ void CompileC(std::ostream &dst, TreePtr program) {
     dst << "){\n";
     CompileC(dst,program->branches.at(1));
     dst << "\n} else {\n";
-    
+
     CompileC(dst,program->branches.at(2));
     dst << "\n}";
   } else if (program->type == "Output") {
@@ -71,7 +71,7 @@ void CompileC(std::ostream &dst, TreePtr program) {
     CompileC(dst,program->branches.at(0));
     dst << ")";
     //dst << ";";
-    
+
 
   } else if (regex_match(program->type, reId)) {
     dst << program->type;
@@ -81,7 +81,8 @@ void CompileC(std::ostream &dst, TreePtr program) {
 }
 
 void GenerateC(std::ostream &dst,TreePtr program) {
-  dst << "int main() {\n";
+  dst << "int getParam(int num) { return 0; }\n";
+  dst << "int main(int argc, char* argv[]) {\n";
   // Compile the whole thing
   CompileC(dst,program);
   // Put the result out
