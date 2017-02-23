@@ -6,4 +6,5 @@ bin/generate_c $1 $2.c
 # Compile to file specified as output using gcc and mips
 mips-linux-gnu-g++ -o $2 $2.c -static
 
-# rm $2.tmp
+# Remove temporary .c file
+rm $2.c
