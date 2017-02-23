@@ -26,4 +26,4 @@ bin/generate_mips : bin/generate_c
 clean :
 	-rm -f bin/*
 	-rm -f src/*.o
-	-rm -f working/*/*.txt
+	-rm -f working/*/*

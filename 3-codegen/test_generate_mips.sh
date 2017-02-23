@@ -23,6 +23,6 @@ for i in test/programs/*; do
     echo "Input file : ${i}"
     echo "Testing $b"
 
-    bin/generate_mips $i/in.code.txt working/$b/c_code.txt \
+    bin/generate_mips $i/in.code.txt working/$b/$b \
         2> working/$b/c_code.stderr.txt
 done
