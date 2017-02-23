@@ -8,5 +8,5 @@ Seq [
       Assign : b [ Add [ b  -1 ] ]
     ]
   ]
-  acc
+  Output [ acc ]
 ]
