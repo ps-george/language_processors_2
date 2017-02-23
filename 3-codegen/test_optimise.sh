@@ -44,10 +44,10 @@ if [[ "$?" -ne "0" ]]; then
 fi
 echo "========================================="
 echo "========================================"
-echo " Force building constant_propogation"
-make -B bin/constant_propogation
+echo " Force building constant_propagation"
+make -B bin/constant_propagation
 if [[ "$?" -ne "0" ]]; then
-    echo "Error while building constant_propogation."
+    echo "Error while building constant_propagation."
     exit 1;
 fi
 echo "========================================="
@@ -84,7 +84,7 @@ for i in test/optimise/*; do
     cp working/$b/got.output.txt working/$b/in.code.txt
     
     # Try constant propogation
-    cat working/$b/in.code.txt | bin/constant_propogation \
+    cat working/$b/in.code.txt | bin/constant_propagation \
       > working/$b/got.output.txt
         
       if [[ "$?" -eq "0" ]]; then

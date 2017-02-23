@@ -28,10 +28,10 @@ echo " Cleaning the temporaries and outputs"
 make clean
 
 echo "========================================"
-echo " Force building constant_propogation"
-make -B bin/constant_propogation
+echo " Force building constant_propagation"
+make -B bin/constant_propagation
 if [[ "$?" -ne "0" ]]; then
-    echo "Error while building constant_propogation."
+    echo "Error while building constant_propagation."
     exit 1;
 fi
 echo "========================================="
@@ -55,7 +55,7 @@ for i in test/optimise/*; do
   while [[ "$CHANGED" -ne 0 ]]; do
     CHANGED=0;
     
-    cat working/$b/in.code.txt | bin/constant_propogation \
+    cat working/$b/in.code.txt | bin/constant_propagation \
       > working/$b/got.output.txt
         
       if [[ "$?" -eq "0" ]]; then

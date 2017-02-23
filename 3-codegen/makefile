@@ -13,7 +13,7 @@ bin/pretty_print : src/ast_parse.o src/ast_pretty_print.o
 
 bin/constant_fold : src/ast_parse.o src/ast_pretty_print.o src/ast_constant_fold.o
 
-bin/constant_propogation : src/ast_parse.o src/ast_pretty_print.o src/ast_constant_propogation.o
+bin/constant_propagation : src/ast_parse.o src/ast_pretty_print.o src/ast_constant_propagation.o
 
 bin/dead_branch_removal : src/ast_parse.o src/ast_pretty_print.o src/ast_dead_branch_removal.o
 

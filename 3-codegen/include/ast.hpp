@@ -119,7 +119,7 @@ void DeadBranchRemoval(
   int &changed
 );
 
-void ConstantPropogation(
+void ConstantPropagation(
   std::map<std::string,std::string>& bindings,
   TreePtr node,
   int &changed

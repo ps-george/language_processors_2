@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
   // Constant propogation
   int changed = 0;
   std::map<std::string, std::string> bindings;
-  ConstantPropogation(bindings, src, changed);
+  ConstantPropagation(bindings, src, changed);
 
   PrettyPrint(std::cout, src);
 
