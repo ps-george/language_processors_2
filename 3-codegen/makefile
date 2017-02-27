@@ -20,8 +20,8 @@ bin/dead_branch_removal : src/ast_parse.o src/ast_pretty_print.o src/ast_dead_br
 bin/generate_c : src/ast_parse.o src/ast_pretty_print.o src/ast_generate_c.o
 
 bin/generate_mips : bin/generate_c
-	cp src/generate_mips.sh bin/generate_mips
-	chmod +x bin/generate_mips
+	@cp src/generate_mips.sh bin/generate_mips
+	@chmod +x bin/generate_mips
 
 clean :
 	-rm -f bin/*
