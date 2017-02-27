@@ -1,0 +1,338 @@
+gsp14 : Cloning repo
+Cloning into 'gsp14'...
+gsp14 : Fetching repo
+gsp14 : Checking out branch soft-2017-02-27b if it exists...
+error: pathspec 'soft-2017-02-27b' did not match any file(s) known to git.
+gsp14 : Checking out specified hash and creating new branch soft-2017-02-27b
+Switched to a new branch 'soft-2017-02-27b'
+Already on 'soft-2017-02-27b'
+gsp14 : Checking we're on the right hash e63b8304ee4115554c66804a503b1a54ccab65d2...
+cd ${REPOS}/$U && git rev-parse $RUN
+gsp14 : Checking we're on branch soft-2017-02-27b
+cd ${REPOS}/$U && git rev-parse --abbrev-ref HEAD
+Note that each submission has not been looked at manually, they
+have only been randomly sampled to get an idea if the test automation.
+is working for most submission. If the build system appears
+to be broken, please raise an issue (though stability of these
+runs is not a huge priority).
+
+
+do_or_die "Overwriting test_interpreter.sh with one from spec." \
+    cp $SCRATCH/spec/3-codegen/test_interpreter.sh $REPO/3-codegen/test_interpreter.sh
+gsp14 : Overwriting test_interpreter.sh with one from spec.
+
+do_or_die "Overwriting test_compiler.sh with one from spec." \
+    cp $SCRATCH/spec/3-codegen/test_compiler.sh $REPO/3-codegen/test_compiler.sh
+gsp14 : Overwriting test_compiler.sh with one from spec.
+
+do_or_die "Ensuring test_parser.sh is executable." \
+    chmod u+x $REPO/3-codegen/*.sh
+gsp14 : Ensuring test_parser.sh is executable.
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 1"
+gsp14 : ## Part 1
+
+log_msg "Part 1 : Running test"
+gsp14 : Part 1 : Running test
+(cd $REPO/3-codegen && ./test_interpreter.sh)
+/usr/bin/dos2unix
+========================================
+ Cleaning the temporaries and outputs
+rm -f bin/*
+rm -f src/*.o
+rm -f working/*/*
+========================================
+ Force building interpreter
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_parse.o src/ast_parse.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_pretty_print.o src/ast_pretty_print.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_interpret.o src/ast_interpret.cpp
+mkdir -p bin
+g++  -std=c++11 -w -Wall -g -I include -o bin/interpreter src/interpreter.cpp src/ast_parse.o src/ast_pretty_print.o src/ast_interpret.o  
+=========================================
+===========================
+
+Input file : test/programs/add_input
+Testing add_input, params = 
+
+===========================
+
+Input file : test/programs/add_params
+Testing add_params, params = 10 7
+
+===========================
+
+Input file : test/programs/assign_10
+Testing assign_10, params = 
+
+===========================
+
+Input file : test/programs/cascade
+Testing cascade, params = 0 6 7
+
+===========================
+
+Input file : test/programs/constant_5
+Testing constant_5, params = 
+
+===========================
+
+Input file : test/programs/if_false
+Testing if_false, params = 0 6 7
+
+===========================
+
+Input file : test/programs/if_true
+Testing if_true, params = 3 6 7
+
+===========================
+
+Input file : test/programs/multiply_fast
+Testing multiply_fast, params = 150 151
+
+===========================
+
+Input file : test/programs/multiply_params
+Testing multiply_params, params = 8 7
+
+===========================
+
+Input file : test/programs/sequence
+Testing sequence, params = 
+
+########################################
+Passed 10 out of 10.
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 2"
+gsp14 : ## Part 2
+
+log_msg "Part 1 : Running test"
+gsp14 : Part 1 : Running test
+(cd $REPO/3-codegen && ./test_compiler.sh)
+/usr/bin/dos2unix
+========================================
+ Cleaning the temporaries and outputs
+rm -f bin/*
+rm -f src/*.o
+rm -f working/*/*
+ Force building vm (just in case)
+mkdir -p bin
+g++  -std=c++11 -w -Wall -g -I include -o bin/vm src/vm.cpp  
+========================================
+ Force building compiler
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_parse.o src/ast_parse.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_pretty_print.o src/ast_pretty_print.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_compile.o src/ast_compile.cpp
+mkdir -p bin
+g++  -std=c++11 -w -Wall -g -I include -o bin/compiler src/compiler.cpp src/ast_parse.o src/ast_pretty_print.o src/ast_compile.o  
+=========================================
+===========================
+
+Input file : test/programs/add_input
+Testing add_input
+  params : 
+
+===========================
+
+Input file : test/programs/add_params
+Testing add_params
+  params : 10 7
+
+===========================
+
+Input file : test/programs/assign_10
+Testing assign_10
+  params : 
+
+===========================
+
+Input file : test/programs/cascade
+Testing cascade
+  params : 0 6 7
+
+===========================
+
+Input file : test/programs/constant_5
+Testing constant_5
+  params : 
+
+===========================
+
+Input file : test/programs/if_false
+Testing if_false
+  params : 0 6 7
+
+===========================
+
+Input file : test/programs/if_true
+Testing if_true
+  params : 3 6 7
+
+===========================
+
+Input file : test/programs/multiply_fast
+Testing multiply_fast
+  params : 150 151
+
+===========================
+
+Input file : test/programs/multiply_params
+Testing multiply_params
+  params : 8 7
+
+===========================
+
+Input file : test/programs/sequence
+Testing sequence
+  params : 
+
+########################################
+Passed 10 out of 10.
+
+
+log_msg "Part 1&2 : Capturing outputs"
+gsp14 : Part 1&2 : Capturing outputs
+(cd $REPO/3-codegen && tar -czf $LOGDIR/3-codegen.tar.gz working )
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 3"
+gsp14 : ## Part 3
+
+
+
+log_msg "Part 3 : Attempting to build bin/constant_fold"
+gsp14 : Part 3 : Attempting to build bin/constant_fold
+(cd $REPO/3-codegen && make -B bin/constant_fold)
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_parse.o src/ast_parse.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_pretty_print.o src/ast_pretty_print.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_constant_fold.o src/ast_constant_fold.cpp
+mkdir -p bin
+g++  -std=c++11 -w -Wall -g -I include -o bin/constant_fold src/constant_fold.cpp src/ast_parse.o src/ast_pretty_print.o src/ast_constant_fold.o  
+
+if [[ -f $REPO/3-codegen/bin/constant_fold ]]; then
+    log_msg "Part 3 : Putting value through..."
+    (cd $REPO/3-codegen && echo "Sub [ x Add [ 4 5 ] ]" | bin/constant_fold | head -c 10000 )
+else
+    log_msg "Part 3 : No binary built"
+fi
+gsp14 : Part 3 : Putting value through...
+Constants folded: 1
+Sub [
+  x
+  9
+]
+
+
+log_msg "Part 3 : Attempting to build bin/dead_branch_removal"
+gsp14 : Part 3 : Attempting to build bin/dead_branch_removal
+(cd $REPO/3-codegen && make -B bin/dead_branch_removal)
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_parse.o src/ast_parse.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_pretty_print.o src/ast_pretty_print.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_dead_branch_removal.o src/ast_dead_branch_removal.cpp
+mkdir -p bin
+g++  -std=c++11 -w -Wall -g -I include -o bin/dead_branch_removal src/dead_branch_removal.cpp src/ast_parse.o src/ast_pretty_print.o src/ast_dead_branch_removal.o  
+
+if [[ -f $REPO/3-codegen/bin/dead_branch_removal ]]; then
+    log_msg "Part 3 : Putting value through..."
+    (cd $REPO/3-codegen && echo "Seq [ Assign : y [ 5 ] If [ 0 Assign : x [ 10 ] Assign : x [ 11 ] ] ]" | bin/dead_branch_removal | head -c 10000 )
+else
+    log_msg "Part 3 : No binary built"
+fi
+gsp14 : Part 3 : Putting value through...
+Dead branches removed: 1
+Seq [
+  Assign : y [
+    5
+  ]
+  Assign : x [
+    11
+  ]
+]
+
+
+log_msg "Part 3 : Attempting to build bin/constant_propagation"
+gsp14 : Part 3 : Attempting to build bin/constant_propagation
+(cd $REPO/3-codegen && make -B bin/constant_propagation)
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_parse.o src/ast_parse.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_pretty_print.o src/ast_pretty_print.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_constant_propagation.o src/ast_constant_propagation.cpp
+mkdir -p bin
+g++  -std=c++11 -w -Wall -g -I include -o bin/constant_propagation src/constant_propagation.cpp src/ast_parse.o src/ast_pretty_print.o src/ast_constant_propagation.o  
+
+if [[ -f $REPO/3-codegen/bin/constant_propagation ]]; then
+    log_msg "Part 3 : Putting value through..."
+    (cd $REPO/3-codegen && echo "Seq [ Assign : x [ 5 ] Assign : y [ x ] Assign : x [ wibble ] Assign : z [ Add [ x 2 ] ] ]" | bin/constant_propagation | head -c 10000 )
+else
+    log_msg "Part 3 : No binary built"
+fi
+gsp14 : Part 3 : Putting value through...
+    Adding binding: x = 5
+    Apply binding:  x = 5
+    Remove binding: x = 5
+Constants propogated: 1
+Seq [
+  Assign : x [
+    5
+  ]
+  Assign : y [
+    5
+  ]
+  Assign : x [
+    wibble
+  ]
+  Assign : z [
+    Add [
+      x
+      2
+    ]
+  ]
+]
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 4"
+gsp14 : ## Part 4
+
+
+log_msg "Part 3 : Attempting to build generate_mips"
+gsp14 : Part 3 : Attempting to build generate_mips
+(cd $REPO/3-codegen && make -B bin/generate_mips)
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_parse.o src/ast_parse.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_pretty_print.o src/ast_pretty_print.cpp
+g++ -std=c++11 -w -Wall -g -I include   -c -o src/ast_generate_c.o src/ast_generate_c.cpp
+mkdir -p bin
+g++  -std=c++11 -w -Wall -g -I include -o bin/generate_c src/generate_c.cpp src/ast_parse.o src/ast_pretty_print.o src/ast_generate_c.o  
+cp src/generate_mips.sh bin/generate_mips
+chmod +x bin/generate_mips
+
+if [[ -f $REPO/3-codegen/bin/generate_mips ]]; then
+    log_msg "Part 3 : Single check."
+    (cd $REPO/3-codegen && bin/generate_mips test/programs/constant_5/in.code.txt my_executable | head -c 1000000 )
+
+    if [[ -f $REPO/3-codegen/my_executable ]]; then
+        log_msg "What is it?"
+        file "$REPO/3-codegen/my_executable"
+
+        log_msg "Part 3 : Trying to run it."
+        $REPO/3-codegen/my_executable
+
+        echo $?
+    fi
+else
+    log_msg "Part 3 : No binary built"
+fi
+gsp14 : Part 3 : Single check.
+gsp14 : What is it?
+/tmp/langproc-2016-lab-student-repos-lab3b/gsp14/3-codegen/my_executable: ELF 32-bit MSB executable, MIPS, MIPS32 rel2 version 1 (SYSV), statically linked, for GNU/Linux 3.2.0, BuildID[sha1]=cf467daa9c03b6f387f58c62b33e4990f609c1f8, not stripped
+gsp14 : Part 3 : Trying to run it.
+0
+
+gsp14 : Test Complete
