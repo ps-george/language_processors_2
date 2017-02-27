@@ -7,6 +7,9 @@
 extern bool cond;
 bool cond = false;
 
+extern std::string rtrn;
+std::string rtrn = "0";
+
 void CompileC(std::ostream &dst, TreePtr program, std::map<std::string, int>& init) {
   std::regex reNum("^-?[0-9]+$");
   std::regex reId("^[a-z][a-z0-9]*$");
@@ -16,7 +19,8 @@ void CompileC(std::ostream &dst, TreePtr program, std::map<std::string, int>& in
     dst << program->type;
     if (!cond){
       dst << ';'; 
-    }  
+    }
+    rtrn = program->type;  
   } else if (program->type == "Param") {
     // If it's a parameter... ignore it? Not supporting parameter.
     dst << "getParam(" << program->value << ",argv, argc)";
@@ -99,8 +103,7 @@ void CompileC(std::ostream &dst, TreePtr program, std::map<std::string, int>& in
   } else if (regex_match(program->type, reId)) {
     // if the last thing doesn't have children, print the semi colon
     dst << program->type;
-    
-    
+    rtrn = program->type;
   } else {
     throw std::runtime_error("Unknown construct '" + program->type + "'");
   }
@@ -121,7 +124,7 @@ void GenerateC(std::ostream &dst,TreePtr program) {
   std::map<std::string, int> init;
   // Compile the whole thing
   CompileC(dst, program, init);
-  dst << "\nreturn 0";
+  dst << "\nreturn " + rtrn;
   //CompileC(dst, deepestChild(last), init);
   dst << ";\n}";
   // Put the result out -> ideally want to return the last thing that happened.
