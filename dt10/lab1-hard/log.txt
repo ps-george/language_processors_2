@@ -1,0 +1,325 @@
+gsp14 : Fetching repo
+From github.com:LangProc/langproc-2016-lab-gsp14
+   8c52fcb..2e42a63  master     -> origin/master
+gsp14 : Checking out branch lab1-hard if it exists...
+Already on 'lab1-hard'
+M	1-regexes/a/test_lexer.sh
+gsp14 : Forcing branch back to hash 5ffb905e6a3405fa34bbc5fd83481a359e858f7b
+HEAD is now at 5ffb905 Added error printf statement back in to remove compile warning
+gsp14 : Checking we're on branch lab1-hard
+cd ${REPOS}/$U && git rev-parse --abbrev-ref HEAD
+gsp14 : Checking we're on the right hash 5ffb905e6a3405fa34bbc5fd83481a359e858f7b...
+cd ${REPOS}/$U && git rev-parse $RUN
+
+mkdir -p $LOGDIR/1-regexes
+
+do_or_die "Overwriting test inputs with ones from spec." \
+    cp $SCRATCH/spec/1-regexes/a/test/in/??.txt $REPO/1-regexes/a/test/in
+gsp14 : Overwriting test inputs with ones from spec.
+
+do_or_die "Overwriting test outputs with ones from spec." \
+    cp $SCRATCH/spec/1-regexes/a/test/ref/??.stdout.txt $REPO/1-regexes/a/test/ref
+gsp14 : Overwriting test outputs with ones from spec.
+
+do_or_die "Overwriting test_lexer.sh with one from spec." \
+    cp $SCRATCH/spec/1-regexes/a/test_lexer.sh $REPO/1-regexes/a/test_lexer.sh
+gsp14 : Overwriting test_lexer.sh with one from spec.
+
+do_or_die "Ensuring test_lexer.sh is executable." \
+    chmod u+x $REPO/1-regexes/a/test_lexer.sh
+gsp14 : Ensuring test_lexer.sh is executable.
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 1"
+gsp14 : ## Part 1
+
+log_msg "Part 1 : Removing any existing binary"
+gsp14 : Part 1 : Removing any existing binary
+(cd $REPO/1-regexes/a && rm histogram)
+
+log_msg "Part 1 : Running test"
+gsp14 : Part 1 : Running test
+(cd $REPO/1-regexes/a && ./test_lexer.sh) | tee $LOGDIR/1-regexes/part-a.log
+========================================
+ Cleaning the temporaries and outputs
+ Force building histogram
+flex -o histogram_lexer.yy.cpp  histogram_lexer.flex
+g++ -W -Wall -g -std=gnu++11 -o histogram  histogram_lexer.yy.cpp histogram_main.cpp
+histogram_lexer.yy.cpp: In function ‘int yy_get_next_buffer()’:
+histogram_lexer.yy.cpp:1063:44: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  if ((int) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+                                            ^
+histogram_lexer.yy.cpp: At global scope:
+histogram_lexer.yy.cpp:1139:17: warning: ‘void yyunput(int, char*)’ defined but not used [-Wunused-function]
+     static void yyunput (int c, char * yy_bp )
+                 ^
+
+=========================================
+===========================
+
+Input file : test/in/01.txt
+===========================
+
+Input file : test/in/02.txt
+===========================
+
+Input file : test/in/03.txt
+===========================
+
+Input file : test/in/04.txt
+===========================
+
+Input file : test/in/05.txt
+===========================
+
+Input file : test/in/06.txt
+===========================
+
+Input file : test/in/07.txt
+===========================
+
+Input file : test/in/08.txt
+===========================
+
+Input file : test/in/09.txt
+===========================
+
+Input file : test/in/10.txt
+===========================
+
+Input file : test/in/11.txt
+===========================
+
+Input file : test/in/12.txt
+===========================
+
+Input file : test/in/13.txt
+===========================
+
+Input file : test/in/14.txt
+===========================
+
+Input file : test/in/15.txt
+===========================
+
+Input file : test/in/16.txt
+===========================
+
+Input file : test/in/17.txt
+===========================
+
+Input file : test/in/18.txt
+===========================
+
+Input file : test/in/19.txt
+===========================
+
+Input file : test/in/20.txt
+===========================
+
+Input file : test/in/21.txt
+===========================
+
+Input file : test/in/22.txt
+===========================
+
+Input file : test/in/23.txt
+===========================
+
+Input file : test/in/24.txt
+===========================
+
+Input file : test/in/25.txt
+===========================
+
+Input file : test/in/26.txt
+===========================
+
+Input file : test/in/27.txt
+########################################
+Passed 27 out of 27.
+
+
+PA_TOTAL=27
+get_passed "PA_PASSED" ${PA_TOTAL} $LOGDIR/1-regexes/part-a.log || exit 1
+grep -E "$MATCH_RE" "$FILE" 
+PA_PASSED=27
+
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 2"
+gsp14 : ## Part 2
+
+log_msg "Part 2 : Removing any existing binary"
+gsp14 : Part 2 : Removing any existing binary
+(cd $REPO/1-regexes/b && rm regex_substitute)
+
+log_msg "Part 2 : Attempting to build regex_substitute"
+gsp14 : Part 2 : Attempting to build regex_substitute
+(cd $REPO/1-regexes/b && make regex_substitute)
+g++ -std=c++11 -W -Wall -g -o regex_substitute regex_substitute.cpp
+
+PB_TOTAL=5
+if [[ -f $REPO/1-regexes/b/regex_substitute ]]; then
+    scripts/lab1-hard-b.sh "$SCRATCH" "$REPO" "$U" "$LOGDIR" | tee $LOGDIR/1-regexes/part-b.log
+
+    get_passed "PB_PASSED" ${PB_TOTAL} $LOGDIR/1-regexes/part-b.log || exit 1
+else
+    log_msg "Part 2 : No binary built"
+    PB_PASSED=0;
+fi
+===========================
+Test test1
+----------------------------------
+s/[^0-9]*([0-9]+)[^0-9]([0-9]+).*/\1,\2/g
+Test case test1 : Pass
+===========================
+Test test2
+----------------------------------
+s/x(aaa[a-z])x/\1\1/g
+Test case test2 : Pass
+===========================
+Test test3
+----------------------------------
+s/adfg|z( )( ?)[a-z]/\1\1 fss ss \1/g
+Test case test3 : Pass
+===========================
+Test test4
+----------------------------------
+s/First[^a-z]*([a-z][a-z0-9]*).*[.]pdf/\1.pdf/g
+Test case test4 : Pass
+===========================
+Test test5
+----------------------------------
+s/(.)(.)(.)(.)/\2\3 \1 \4/g
+Test case test5 : ERROR
+########################################
+Passed 4 out of 5.
+
+grep -E "$MATCH_RE" "$FILE" 
+PB_PASSED=4
+
+
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Part 3"
+gsp14 : ## Part 3
+
+
+log_msg "Part 3 : Removing any existing binary"
+gsp14 : Part 3 : Removing any existing binary
+(cd $REPO/1-regexes/c && rm bin/regex_engine)
+
+log_msg "Part 3 : Attempting to build bin/regex_engine"
+gsp14 : Part 3 : Attempting to build bin/regex_engine
+(cd $REPO/1-regexes/c && make bin/regex_engine)
+g++ -std=c++11 -W -Wall -g -o bin/regex_engine bin/regex_engine.cpp bin/penny_machine.o
+
+PC_TOTAL=15;
+if [[ -f $REPO/1-regexes/c/bin/regex_engine ]]; then
+    scripts/lab1-hard-c.sh "$SCRATCH" "$REPO" "$U" "$LOGDIR" | tee $LOGDIR/1-regexes/part-c.log
+
+    get_passed "PC_PASSED" ${PC_TOTAL} $LOGDIR/1-regexes/part-c.log  || exit 1
+else
+    log_msg "Part 3 : No binary built"
+    PC_PASSED=0;
+fi
+===========================
+Test test10
+Test case test10 : Pass
+===========================
+Test test11
+Test case test11 : Pass
+===========================
+Test test12
+Test case test12 : Pass
+===========================
+Test test13
+Test case test13 : Pass
+===========================
+Test test14
+Test case test14 : Pass
+===========================
+Test test15
+Test case test15 : Pass
+===========================
+Test test1
+Test case test1 : Pass
+===========================
+Test test2
+Test case test2 : Pass
+===========================
+Test test3
+Test case test3 : Pass
+===========================
+Test test4
+Test case test4 : Pass
+===========================
+Test test5
+Test case test5 : Pass
+===========================
+Test test6
+Test case test6 : Pass
+===========================
+Test test7
+Test case test7 : Pass
+===========================
+Test test8
+Test case test8 : Pass
+===========================
+Test test9
+Test case test9 : Pass
+########################################
+Passed 15 out of 15.
+
+grep -E "$MATCH_RE" "$FILE" 
+PC_PASSED=15
+
+
+#######################################################################
+##
+
+(cd $LOGDIR && tar -czf 1-regexes.tar.gz 1-regexes/)
+
+PA_PERCENT=$(nodejs -pe "(100 * ( $PA_PASSED / $PA_TOTAL )).toFixed(2)" );
+nodejs -pe "(100 * ( $PA_PASSED / $PA_TOTAL )).toFixed(2)" 
+PB_PERCENT=$(nodejs -pe "(100 * ( $PB_PASSED / $PB_TOTAL )).toFixed(2)" );
+nodejs -pe "(100 * ( $PB_PASSED / $PB_TOTAL )).toFixed(2)" 
+PC_PERCENT=$(nodejs -pe "(100 * ( $PC_PASSED / $PC_TOTAL )).toFixed(2)" );
+nodejs -pe "(100 * ( $PC_PASSED / $PC_TOTAL )).toFixed(2)" 
+
+PERCENT=$(nodejs -pe "(0.6 * $PA_PERCENT + 0.2 * $PB_PERCENT + 0.2 * $PC_PERCENT).toFixed(2)")
+nodejs -pe "(0.6 * $PA_PERCENT + 0.2 * $PB_PERCENT + 0.2 * $PC_PERCENT).toFixed(2)"
+
+echo "$U, lab1, part-a, ${PA_PERCENT}" > $LOGDIR/1-regexes/results.csv
+echo "$U, lab1, part-b, ${PB_PERCENT}" >> $LOGDIR/1-regexes/results.csv
+echo "$U, lab1, part-c, ${PC_PERCENT}" >> $LOGDIR/1-regexes/results.csv
+echo "$U, lab1, overall, ${PERCENT}" >> $LOGDIR/1-regexes/results.csv
+
+log_msg ""
+gsp14 : 
+log_msg ""
+gsp14 : 
+log_msg "########################################################"
+gsp14 : ########################################################
+log_msg "## Summary "
+gsp14 : ## Summary 
+
+log_msg "Part A (60%) : $PA_PERCENT% ($PA_PASSED / $PA_TOTAL)";
+gsp14 : Part A (60%) : 100.00% (27 / 27)
+log_msg "Part B (20%) : $PB_PERCENT% ($PB_PASSED / $PB_TOTAL)";
+gsp14 : Part B (20%) : 80.00% (4 / 5)
+log_msg "Part C (20%) : $PC_PERCENT% ($PC_PASSED / $PC_TOTAL)";
+gsp14 : Part C (20%) : 100.00% (15 / 15)
+
+log_msg "Overall      : $PERCENT"
+gsp14 : Overall      : 96.00
+
+
+
+exit 0
+gsp14 : Test Complete
