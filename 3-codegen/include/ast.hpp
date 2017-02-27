@@ -46,10 +46,10 @@ struct Tree
 
 
 inline TreePtr Number(int32_t x)
-{ return std::make_shared<Tree>("Number", std::to_string(x)); }
+{ return std::make_shared<Tree>(std::to_string(x)); }
 
 inline TreePtr Variable(std::string id)
-{ return std::make_shared<Tree>("Variable", id); }
+{ return std::make_shared<Tree>(id); }
 
 inline TreePtr Input(std::string id)
 { return std::make_shared<Tree>("Input", id); }
@@ -72,13 +72,8 @@ inline TreePtr Seq(std::initializer_list<TreePtr> statements)
 inline TreePtr While(TreePtr cond, TreePtr stat)
 { return std::make_shared<Tree>("While", cond, stat ); }
 
-inline TreePtr If(TreePtr cond, TreePtr stat1, TreePtr stat2)
-{ return std::make_shared<Tree>("If", cond, stat1, stat2); }
-
-//inline TreePtr Assign(std::string id, TreePtr right)
-//{ return std::make_shared<Tree>("Assign", id, right); }
-//inline TreePtr Param(std::string value)
-//{ return std::make_shared<Tree>("Param  ", value); }
+inline TreePtr If(TreePtr cond, TreePtr stat1)
+{ return std::make_shared<Tree>("If", cond, stat1); }
 
 TreePtr Parse(
     std::istream &src

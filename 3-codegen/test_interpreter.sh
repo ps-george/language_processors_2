@@ -76,7 +76,7 @@ for i in test/programs/*; do
     GOT_OUTPUT=$(echo $(cat working/$b/got.output.txt | ${DOS2UNIX} ))
     REF_OUTPUT=$(echo $(cat $i/ref.output.txt | ${DOS2UNIX} ))
 
-    if [[ "${GOT_OUTPUT}" -ne "${REF_OUTPUT}" ]]; then
+    if [[ "${GOT_OUTPUT}" != "${REF_OUTPUT}" ]]; then
         echo "  got output : ${GOT_OUTPUT}"
         echo "  ref output : ${REF_OUTPUT}"
         echo "  FAIL!";
